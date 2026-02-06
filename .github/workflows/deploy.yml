@@ -1,0 +1,35 @@
+name: Deploy para Hostinger
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy Catálogo
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout código
+        uses: actions/checkout@v4
+      
+      - name: 🔐 Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+          
+      - name: 🚀 Deploy via SCP
+        run: |
+          scp -i ~/.ssh/id_rsa \
+            src/index.html \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/u937514520/domains/catalog.atenza.digital/public_html/
+          
+      - name: ✅ Verificar deploy
+        run: |
+          echo "✅ Deploy concluído!"
+          echo "🌐 URL: https://catalog.atenza.digital"
+          curl -I https://catalog.atenza.digital || echo "Site pode demorar alguns segundos para atualizar"
