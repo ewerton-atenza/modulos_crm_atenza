@@ -22,14 +22,17 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
           
-      - name: 🚀 Deploy via SCP
+      - name: 🚀 Enviar arquivos via SCP
         run: |
-          scp -i ~/.ssh/id_rsa \
-            src/index.html \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/u937514520/domains/catalog.atenza.digital/public_html/
+          # Envia todos os arquivos necessários para o Docker (Dockerfile, docker-compose, src, etc)
+          scp -i ~/.ssh/id_rsa -r ./* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/u937514520/domains/catalog.atenza.digital/public_html/
+          
+      - name: 🐳 Atualizar Docker na VPS
+        run: |
+          # Acessa a VPS, entra na pasta e recria o container com a nova build
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd /home/u937514520/domains/catalog.atenza.digital/public_html/ && docker compose up -d --build"
           
       - name: ✅ Verificar deploy
         run: |
-          echo "✅ Deploy concluído!"
+          echo "✅ Deploy e Docker atualizados com sucesso!"
           echo "🌐 URL: https://catalog.atenza.digital"
-          curl -I https://catalog.atenza.digital || echo "Site pode demorar alguns segundos para atualizar"
