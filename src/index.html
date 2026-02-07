@@ -211,11 +211,22 @@
     async function loadCategories() {
       if (!currentAccount) return;
       
-      const { data, error } = await sb
+      // Buscar categorias pelo account_id local
+      let { data, error } = await sb
         .from('categories')
         .select('*')
         .eq('account_id', currentAccount.id)
         .order('display_order');
+      
+      // Se não encontrar, tentar buscar pelo helena_id (se existir)
+      if ((!data || data.length === 0) && currentAccount.helena_id) {
+        const { data: data2 } = await sb
+          .from('categories')
+          .select('*')
+          .eq('account_id', currentAccount.helena_id)
+          .order('display_order');
+        data = data2;
+      }
       
       if (error) {
         console.error('Erro ao carregar categorias:', error);
@@ -229,11 +240,22 @@
     async function loadProducts() {
       if (!currentAccount) return;
       
-      const { data, error } = await sb
+      // Buscar produtos pelo account_id local
+      let { data, error } = await sb
         .from('products')
         .select('*')
         .eq('account_id', currentAccount.id)
         .order('display_order');
+      
+      // Se não encontrar, tentar buscar pelo helena_id (se existir)
+      if ((!data || data.length === 0) && currentAccount.helena_id) {
+        const { data: data2 } = await sb
+          .from('products')
+          .select('*')
+          .eq('account_id', currentAccount.helena_id)
+          .order('display_order');
+        data = data2;
+      }
       
       if (error) {
         console.error('Erro ao carregar produtos:', error);
