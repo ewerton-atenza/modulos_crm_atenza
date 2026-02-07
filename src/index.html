@@ -471,14 +471,16 @@
         acc = newAcc;
       }
       
-      if (!acc) {
+      if (!acc || !acc.id) {
+        console.error('❌ Erro: Conta não possui ID válido', acc);
         throw new Error('Não foi possível obter ou criar a conta.');
       }
       
       accUUID = acc.id;
       console.log('✅ Account UUID:', accUUID);
       
-      let {data: cats} = await sb.from('categories').select('*').eq('account_id', accUUID).order('display_order');
+      let {data: cats, error: catsError} = await sb.from('categories').select('*').eq('account_id', accUUID).order('display_order');
+      if (catsError) console.warn('⚠️ Erro ao carregar categorias:', catsError);
       if (cats && cats.length) {
         categories.length = 0;
         cats.forEach(c => categories.push({
@@ -489,7 +491,8 @@
         }));
       }
       
-      let {data: prods} = await sb.from('products').select('*').eq('account_id', accUUID).order('display_order');
+      let {data: prods, error: prodsError} = await sb.from('products').select('*').eq('account_id', accUUID).order('display_order');
+      if (prodsError) console.warn('⚠️ Erro ao carregar produtos:', prodsError);
       if (prods && prods.length) {
         products.length = 0;
         for (let p of prods) {
