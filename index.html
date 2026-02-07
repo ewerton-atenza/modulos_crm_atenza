@@ -337,36 +337,21 @@
   </div>
 
   <script>
-    const apiUrl = window.location.protocol + '//' + window.location.hostname + ':3002';
+    const supabaseUrl = window.location.protocol + '//' + window.location.hostname;
 
     let currentAccount = null;
 
-    async function fetchAccount(helenaAccountId) {
-      const url = `${apiUrl}/api/accounts?helena_account_id=${helenaAccountId}`;
-      console.log('Fetching account:', url);
-      const response = await fetch(url);
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Erro ${response.status}: ${errorText}`);
-      }
-      return await response.json();
-    }
-
-    async function fetchCategories(accountId) {
-      const url = `${apiUrl}/api/categories?account_id=${accountId}`;
-      console.log('Fetching categories:', url);
-      const response = await fetch(url);
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Erro ${response.status}: ${errorText}`);
-      }
-      return await response.json();
-    }
-
-    async function fetchProducts(accountId) {
-      const url = `${apiUrl}/api/products?account_id=${accountId}`;
-      console.log('Fetching products:', url);
-      const response = await fetch(url);
+    async function fetchAccountData(helenaAccountId) {
+      const url = `${supabaseUrl}/rest/v1/rpc/get_account_data`;
+      console.log('Fetching account data:', url);
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE'
+        },
+        body: JSON.stringify({ p_helena_account_id: helenaAccountId })
+      });
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Erro ${response.status}: ${errorText}`);
@@ -441,35 +426,26 @@
 
       console.log(`Buscando conta com helena_account_id: ${helenaAccountId}`);
       try {
-        currentAccount = await fetchAccount(helenaAccountId);
-        console.log('Conta encontrada:', currentAccount);
-        await loadData();
+        const data = await fetchAccountData(helenaAccountId);
+        console.log('Dados recebidos:', data);
+        
+        if (data.error) {
+          throw new Error(data.error);
+        }
+        
+        currentAccount = data.account;
+        categories = data.categories || [];
+        products = data.products || [];
+        
+        console.log('Conta:', currentAccount);
+        console.log('Categorias:', categories.length);
+        console.log('Produtos:', products.length);
+        
+        renderCatalog();
       } catch (err) {
         console.error('Erro na inicializacao:', err);
         document.getElementById('catalogTree').innerHTML = '<div class="card p-10 text-center"><h3 class="text-lg font-medium">Erro ao conectar</h3><p class="text-sm text-gray-500">' + err.message + '</p></div>';
       }
-    }
-
-    async function loadData() {
-      if (!currentAccount) return;
-
-      try {
-        categories = await fetchCategories(currentAccount.id);
-        console.log('Categorias carregadas:', categories.length, categories);
-      } catch (err) {
-        console.error('Erro ao carregar categorias:', err);
-        categories = [];
-      }
-
-      try {
-        products = await fetchProducts(currentAccount.id);
-        console.log('Produtos carregados:', products.length, products);
-      } catch (err) {
-        console.error('Erro ao carregar produtos:', err);
-        products = [];
-      }
-
-      renderCatalog();
     }
     
     function icon(name,cls){cls=cls||'w-4 h-4';var svg=ICONS[name]||ICONS.package;return '<span class="inline-flex '+cls+'">'+svg+'</span>';}

@@ -18,23 +18,34 @@ DB_CONFIG = {
 def get_db_connection():
     return psycopg2.connect(**DB_CONFIG)
 
+@app.route('/health', methods=['GET'])
+def health():
+    print('=== GET /health ===')
+    return jsonify({'status': 'ok'})
+
 @app.route('/api/accounts', methods=['GET'])
 def get_accounts():
+    print('=== GET /api/accounts ===' )
     helena_account_id = request.args.get('helena_account_id')
+    print(f'helena_account_id: {helena_account_id}')
     
     if not helena_account_id:
         return jsonify({'error': 'helena_account_id is required'}), 400
     
     try:
+        print('Conectando ao banco...')
         conn = get_db_connection()
+        print('Conectado!')
         cur = conn.cursor()
         
+        print('Executando query...')
         cur.execute(
             "SELECT id, name FROM accounts WHERE helena_account_id = %s",
             (helena_account_id,)
         )
         
         row = cur.fetchone()
+        print(f'Resultado: {row}')
         cur.close()
         conn.close()
         
@@ -44,6 +55,9 @@ def get_accounts():
             return jsonify({'error': 'Account not found'}), 404
             
     except Exception as e:
+        print(f'ERRO: {e}')
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/categories', methods=['GET'])
