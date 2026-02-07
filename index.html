@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -177,13 +176,16 @@
               </div>
               <div>
                 <label class="block text-sm font-medium mb-1.5">Ordem</label>
-                <input type="number" id="planOrder" class="w-full px-3 py-2.5 rounded-lg text-sm" value="1" min="1">
+                <input type="number" id="planOrder" class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="1" min="1">
               </div>
             </div>
             <div>
-              <label class="block text-sm font-medium mb-1.5">Recursos</label>
-              <div id="planFeaturesList" class="space-y-2"></div>
-              <button type="button" onclick="addPlanFeature()" class="mt-2 text-sm flex items-center gap-1" style="color:var(--primary);"><svg class="w-3 h-3" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Adicionar</button>
+              <label class="block text-sm font-medium mb-1.5">Itens Incluidos</label>
+              <div id="planFeaturesList" class="space-y-2 mb-2"></div>
+              <button type="button" onclick="addPlanFeature()" class="text-sm flex items-center gap-1" style="color: var(--primary);">
+                <svg class="w-4 h-4" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Adicionar item
+              </button>
             </div>
           </div>
         </form>
@@ -215,18 +217,18 @@
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="block text-sm font-medium mb-1.5">Nome *</label>
-                <input type="text" id="addonName" required class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="Ex: Forca de Vendas...">
+                <input type="text" id="addonName" required class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="Ex: Taxa Urgencia...">
               </div>
               <div>
                 <label class="block text-sm font-medium mb-1.5">Codigo/SKU</label>
-                <input type="text" id="addonSku" class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="ADC-001">
+                <input type="text" id="addonSku" class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="ADD-001">
               </div>
             </div>
             <div>
               <label class="block text-sm font-medium mb-1.5">Descricao</label>
-              <textarea id="addonDescription" rows="2" class="w-full px-3 py-2.5 rounded-lg text-sm resize-none" placeholder="O que esta incluido..."></textarea>
+              <textarea id="addonDescription" rows="2" class="w-full px-3 py-2.5 rounded-lg text-sm resize-none" placeholder="O que oferece..."></textarea>
             </div>
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-3 gap-3">
               <div>
                 <label class="block text-sm font-medium mb-1.5">Preco *</label>
                 <div class="relative">
@@ -237,25 +239,24 @@
               <div>
                 <label class="block text-sm font-medium mb-1.5">Ciclo</label>
                 <select id="addonBillingCycle" class="w-full px-3 py-2.5 rounded-lg text-sm">
-                  <option value="one_time">Unico</option><option value="monthly">Mensal</option><option value="quarterly">Trimestral</option><option value="semiannual">Semestral</option><option value="yearly">Anual</option>
+                  <option value="one_time">Unico</option><option value="monthly">Mensal</option><option value="yearly">Anual</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Tipo</label>
+                <select id="addonType" class="w-full px-3 py-2.5 rounded-lg text-sm">
+                  <option value="addon">Adicional</option><option value="setup">Setup</option><option value="service">Servico</option><option value="tax">Taxa</option>
                 </select>
               </div>
             </div>
             <div>
-              <label class="block text-sm font-medium mb-1.5">Tipo</label>
-              <select id="addonType" class="w-full px-3 py-2.5 rounded-lg text-sm">
-                <option value="addon">Adicional</option><option value="setup">Taxa de Setup</option><option value="tax">Imposto</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-medium mb-1.5">Opcoes Compativeis</label>
+              <label class="block text-sm font-medium mb-1.5">Compativel com Opcoes</label>
               <div id="addonCompatiblePlans" class="flex flex-wrap gap-2"></div>
+              <p class="text-xs mt-1.5" style="color: var(--text-muted);">Deixe em branco para todas</p>
             </div>
-            <div>
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" id="addonRequired" style="accent-color:var(--warning);">
-                <span class="text-sm font-medium">Obrigatorio</span>
-              </label>
+            <div class="flex items-center gap-3 p-3 rounded-lg" style="background: #FFFBEB;">
+              <input type="checkbox" id="addonRequired" class="w-4 h-4 rounded" style="accent-color: var(--warning);">
+              <label for="addonRequired" class="text-sm" style="color: #B45309;">Obrigatorio na proposta</label>
             </div>
           </div>
         </form>
@@ -270,34 +271,30 @@
   <!-- Modal: Categoria -->
   <div id="categoryModal" class="fixed inset-0 z-50 hidden">
     <div class="modal-backdrop absolute inset-0" onclick="closeCategoryModal()"></div>
-    <div class="absolute inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-lg rounded-xl overflow-hidden flex flex-col max-h-[90vh] bg-white shadow-xl">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md rounded-xl overflow-hidden bg-white shadow-xl">
       <div class="px-5 py-4 border-b flex items-center justify-between" style="border-color: var(--border);">
         <h2 class="text-base font-semibold">Nova Categoria</h2>
         <button onclick="closeCategoryModal()" class="p-1 rounded hover:bg-gray-100">
           <svg class="w-5 h-5" style="color: var(--text-muted);" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
-      <div class="flex-1 overflow-y-auto p-5">
-        <input type="hidden" id="categoryIcon" value="package">
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium mb-1.5">Nome *</label>
-            <input type="text" id="categoryName" required class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="Ex: Software...">
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1.5">Descricao</label>
-            <textarea id="categoryDescription" rows="2" class="w-full px-3 py-2.5 rounded-lg text-sm resize-none" placeholder="Descricao da categoria..."></textarea>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1.5">Icone</label>
-            <div onclick="openIconPicker()" class="w-full px-3 py-2.5 rounded-lg text-sm flex items-center justify-between cursor-pointer" style="border:1px solid var(--border);">
-              <div class="flex items-center gap-2">
-                <span id="selectedIconPreview"></span>
-                <span id="selectedIconName"></span>
-              </div>
-              <span style="color:var(--text-muted);">Alterar</span>
-            </div>
-          </div>
+      <div class="p-5 space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Nome *</label>
+          <input type="text" id="categoryName" class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="Ex: Software, Servicos...">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Descricao</label>
+          <textarea id="categoryDescription" rows="2" class="w-full px-3 py-2.5 rounded-lg text-sm resize-none" placeholder="Descricao..."></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Icone</label>
+          <button type="button" onclick="openIconPicker()" class="w-full px-3 py-2.5 rounded-lg text-sm flex items-center gap-3 text-left" style="background: white; border: 1px solid var(--border);">
+            <span id="selectedIconPreview" class="w-8 h-8 rounded-lg flex items-center justify-center icon-box"></span>
+            <span id="selectedIconName">package</span>
+            <svg class="w-4 h-4 ml-auto" style="color: var(--text-muted);" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <input type="hidden" id="categoryIcon" value="package">
         </div>
       </div>
       <div class="px-5 py-4 border-t flex justify-end gap-2" style="background: var(--bg-page); border-color: var(--border);">
@@ -347,10 +344,62 @@
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     let currentAccount = null;
-    let categories = [];
-    let products = [];
+    var ICONS = {
+      package: '<svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>',
+      monitor: '<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+      shield: '<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+      droplet: '<svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>',
+      box: '<svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>',
+      server: '<svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>',
+      database: '<svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>',
+      cloud: '<svg viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>',
+      settings: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+      tool: '<svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+      truck: '<svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>',
+      home: '<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+      users: '<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+      briefcase: '<svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+      heart: '<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>',
+      star: '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+      zap: '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+      tag: '<svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>',
+      coffee: '<svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>',
+      book: '<svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+      globe: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+      award: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>',
+      target: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+      activity: '<svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
+      cart: '<svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>',
+      calendar: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+      phone: '<svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+      mail: '<svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+      layers: '<svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
+      file: '<svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>',
+      folder: '<svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>',
+      clipboard: '<svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>'
+    };
+    
+    var iconList = [
+      {name:'package',tags:['produto','caixa']},{name:'monitor',tags:['tecnologia','computador']},{name:'shield',tags:['protecao','seguranca']},
+      {name:'droplet',tags:['agua','limpeza']},{name:'box',tags:['produto','caixa']},{name:'server',tags:['tecnologia','servidor']},
+      {name:'database',tags:['dados','banco']},{name:'cloud',tags:['nuvem','saas']},{name:'settings',tags:['configuracao']},
+      {name:'tool',tags:['ferramenta','servico']},{name:'truck',tags:['transporte','logistica']},{name:'home',tags:['casa','imovel']},
+      {name:'users',tags:['pessoas','equipe']},{name:'briefcase',tags:['negocios','trabalho']},{name:'heart',tags:['saude']},
+      {name:'star',tags:['favorito','destaque']},{name:'zap',tags:['energia','rapido']},{name:'tag',tags:['etiqueta','preco']},
+      {name:'coffee',tags:['cafe','alimentacao']},{name:'book',tags:['livro','educacao']},{name:'globe',tags:['internet','web']},
+      {name:'award',tags:['premio']},{name:'target',tags:['meta','objetivo']},{name:'activity',tags:['saude','fitness']},
+      {name:'cart',tags:['compras','ecommerce']},{name:'calendar',tags:['agenda','data']},{name:'phone',tags:['telefone']},
+      {name:'mail',tags:['email','mensagem']},{name:'layers',tags:['camadas']},{name:'file',tags:['arquivo','documento']},
+      {name:'folder',tags:['pasta']},{name:'clipboard',tags:['lista','tarefas']}
+    ];
+    
+    var selectedIcon = 'package';
+    var tempSelectedIcon = 'package';
     var collapsedCategories = {};
     var collapsedProducts = {};
+    
+    var categories = [];
+    var products = [];
 
     async function initializeApp() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -408,42 +457,143 @@
       renderCatalog();
     }
     
-    function renderCatalog(){
-        var container=document.getElementById('catalogTree');
-        if (!categories || categories.length === 0) {
-            container.innerHTML = '<div class="card p-10 text-center"><div class="w-12 h-12 mx-auto mb-3 rounded-lg flex items-center justify-center icon-box">' + icon('package', 'w-6 h-6') + '</div><h3 class="text-sm font-medium mb-1">Catálogo vazio</h3><p class="text-xs mb-3" style="color:var(--text-muted);">Comece criando uma categoria.</p><button onclick="openCategoryModal()" class="btn-primary px-4 py-2 rounded-lg text-sm">Criar Categoria</button></div>';
-            return;
-        }
-
-        var html=categories.map(function(cat){
-            var catProducts=products.filter(function(p){return p.category_id===cat.id;});
-            var isCollapsed=collapsedCategories[cat.id];
-            return '<div class="card overflow-hidden">'+
-                '<div class="category-header px-5 py-3 flex items-center justify-between border-b cursor-pointer" style="border-color:var(--border);" onclick="toggleCategory(\''+cat.id+'\')">'+
-                '<div class="flex items-center gap-3">'+
-                chevron(!isCollapsed)+
-                '<span class="w-8 h-8 rounded-lg flex items-center justify-center icon-box">'+icon(cat.icon||'package','w-4 h-4')+'</span>'+
-                '<div><h2 class="text-sm font-semibold">'+cat.name+'</h2><p class="text-xs" style="color:var(--text-muted);">'+(cat.description||'')+'</p></div>'+
-                '</div>'+
-                '<div class="flex items-center gap-2" onclick="event.stopPropagation();">'+
-                '<span class="badge badge-count">'+catProducts.length+' item(s)</span>'+
-                '<button onclick="deleteCategory(\''+cat.id+'\')" class="p-1.5 rounded hover:bg-red-50 opacity-50 hover:opacity-100" style="color:var(--danger);"><svg class="w-4 h-4" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>'+
-                '</div>'+
-                '</div>'+
-                '<div class="collapse-content '+(isCollapsed?'':'open')+'">'+
-                catProducts.map(function(p){return renderProduct(p);}).join('')+
-                (catProducts.length===0?'<div class="px-5 py-10 text-center" style="color:var(--text-muted);"><p class="text-sm">Nenhum item</p><button onclick="openProductModal(null,\''+cat.id+'\')" class="mt-2 text-sm hover:underline" style="color:var(--primary);">+ Adicionar</button></div>':'')+
-                '</div>'+
-                '</div>';
-        }).join('');
-        container.innerHTML=html;
-        populateCategorySelects();
+    function icon(name,cls){cls=cls||'w-4 h-4';var svg=ICONS[name]||ICONS.package;return '<span class="inline-flex '+cls+'">'+svg+'</span>';}
+    function chevron(open){return '<span class="chevron '+(open?'open':'')+'" style="color:var(--text-muted);"><svg class="w-4 h-4" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>';}
+    
+    function openIconPicker(){tempSelectedIcon=selectedIcon;document.getElementById('iconPickerModal').classList.remove('hidden');document.getElementById('iconSearch').value='';renderIconGrid();}
+    function closeIconPicker(){document.getElementById('iconPickerModal').classList.add('hidden');}
+    function renderIconGrid(filter){
+      var grid=document.getElementById('iconGrid');
+      var filtered=filter?iconList.filter(function(i){return i.name.indexOf(filter.toLowerCase())>=0||i.tags.some(function(t){return t.indexOf(filter.toLowerCase())>=0;});}):iconList;
+      grid.innerHTML=filtered.map(function(ic){var sel=tempSelectedIcon===ic.name;return '<div class="icon-item '+(sel?'selected':'')+'" onclick="selectIcon(\''+ic.name+'\')" title="'+ic.name+'">'+icon(ic.name,'w-5 h-5')+'</div>';}).join('');
     }
-
-    window.toggleCategory = (catId) => { collapsedCategories[catId] = !collapsedCategories[catId]; renderCatalog(); }
-    window.toggleProduct = (prodId) => { collapsedProducts[prodId] = !collapsedProducts[prodId]; renderCatalog(); }
-
-    document.addEventListener('DOMContentLoaded', initializeApp);
+    function filterIcons(v){renderIconGrid(v);}
+    function selectIcon(name){tempSelectedIcon=name;renderIconGrid(document.getElementById('iconSearch').value);}
+    function confirmIconSelection(){selectedIcon=tempSelectedIcon;document.getElementById('categoryIcon').value=selectedIcon;document.getElementById('selectedIconPreview').innerHTML=icon(selectedIcon,'w-5 h-5');document.getElementById('selectedIconName').textContent=selectedIcon;closeIconPicker();}
+    function updateIconPreview(){document.getElementById('selectedIconPreview').innerHTML=icon(selectedIcon,'w-5 h-5');}
+    
+    function toggleCategory(catId){collapsedCategories[catId]=!collapsedCategories[catId];renderCatalog();}
+    function toggleProduct(prodId){collapsedProducts[prodId]=!collapsedProducts[prodId];renderCatalog();}
+    
+    function renderCatalog(){
+      var container=document.getElementById('catalogTree');
+      var html=categories.map(function(cat){
+        var catProducts=products.filter(function(p){return p.category_id===cat.id;});
+        var isCollapsed=collapsedCategories[cat.id];
+        return '<div class="card overflow-hidden">'+
+          '<div class="category-header px-5 py-3 flex items-center justify-between border-b cursor-pointer" style="border-color:var(--border);" onclick="toggleCategory(\''+cat.id+'\')">'+
+            '<div class="flex items-center gap-3">'+
+              chevron(!isCollapsed)+
+              '<span class="w-8 h-8 rounded-lg flex items-center justify-center icon-box">'+icon(cat.icon||'package','w-4 h-4')+'</span>'+
+              '<div><h2 class="text-sm font-semibold">'+cat.name+'</h2><p class="text-xs" style="color:var(--text-muted);">'+(cat.description||'')+'</p></div>'+
+            '</div>'+
+            '<div class="flex items-center gap-2" onclick="event.stopPropagation();">'+
+              '<span class="badge badge-count">'+catProducts.length+' item(s)</span>'+
+              '<button onclick="deleteCategory(\''+cat.id+'\')" class="p-1.5 rounded hover:bg-red-50 opacity-50 hover:opacity-100" style="color:var(--danger);"><svg class="w-4 h-4" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>'+
+            '</div>'+
+          '</div>'+
+          '<div class="collapse-content '+(isCollapsed?'':'open')+'">'+
+            catProducts.map(function(p){return renderProduct(p);}).join('')+
+            (catProducts.length===0?'<div class="px-5 py-10 text-center" style="color:var(--text-muted);"><p class="text-sm">Nenhum item</p><button onclick="openProductModal(null,\''+cat.id+'\')" class="mt-2 text-sm hover:underline" style="color:var(--primary);">+ Adicionar</button></div>':'')+
+          '</div>'+
+        '</div>';
+      }).join('');
+      container.innerHTML=html||'<div class="card p-10 text-center"><div class="w-12 h-12 mx-auto mb-3 rounded-lg flex items-center justify-center icon-box">'+icon('package','w-6 h-6')+'</div><h3 class="text-sm font-medium mb-1">Catalogo vazio</h3><p class="text-xs mb-3" style="color:var(--text-muted);">Comece criando uma categoria.</p><button onclick="openCategoryModal()" class="btn-primary px-4 py-2 rounded-lg text-sm">Criar Categoria</button></div>';
+      populateCategorySelects();
+    }
+    
+    function renderProduct(p){
+      var plans=(p.plans||[]).slice().sort(function(a,b){return a.order-b.order;});
+      var isCollapsed=collapsedProducts[p.id];
+      return '<div class="border-t" style="border-color:var(--border);">'+
+        '<div class="px-5 py-3 flex items-center justify-between cursor-pointer hover:bg-gray-50" onclick="toggleProduct(\''+p.id+'\')">'+
+          '<div class="flex items-center gap-3">'+
+            chevron(!isCollapsed)+
+            '<div class="w-8 h-8 rounded-lg flex items-center justify-center icon-box">'+icon('box','w-4 h-4')+'</div>'+
+            '<div><h3 class="text-sm font-semibold">'+p.name+'</h3><p class="text-xs" style="color:var(--text-muted);">'+(p.description||'')+'</p></div>'+
+          '</div>'+
+          '<div class="flex items-center gap-2" onclick="event.stopPropagation();">'+
+            '<span class="badge '+(p.status==='active'?'badge-active':'badge-inactive')+'">'+(p.status==='active'?'Ativo':'Inativo')+'</span>'+
+            '<button onclick="editProduct(\''+p.id+'\')" class="p-1.5 rounded hover:bg-blue-50 opacity-50 hover:opacity-100" style="color:var(--primary);"><svg class="w-4 h-4" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>'+
+            '<button onclick="deleteProduct(\''+p.id+'\')" class="p-1.5 rounded hover:bg-red-50 opacity-50 hover:opacity-100" style="color:var(--danger);"><svg class="w-4 h-4" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>'+
+          '</div>'+
+        '</div>'+
+        '<div class="collapse-content '+(isCollapsed?'':'open')+'">'+
+          '<div class="px-5 pb-4 pt-1 pl-14">'+
+            '<div class="mb-4">'+
+              '<div class="flex items-center justify-between mb-2">'+
+                '<h4 class="text-xs font-medium" style="color:var(--text-muted);">Opcoes ('+plans.length+')</h4>'+
+                '<button onclick="openPlanModal(\''+p.id+'\')" class="text-xs flex items-center gap-1" style="color:var(--primary);"><svg class="w-3 h-3" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nova</button>'+
+              '</div>'+
+              '<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">'+
+                plans.map(function(pl){
+                  return '<div class="plan-card relative p-3 cursor-pointer" onclick="editPlan(\''+p.id+'\',\''+pl.id+'\')">'+
+                    '<h5 class="font-medium text-xs mb-0.5">'+pl.name+'</h5>'+
+                    '<p class="text-base font-bold" style="color:var(--primary);">'+formatCurrency(pl.price)+'</p>'+
+                    '<p class="text-[10px]" style="color:var(--text-muted);">'+getBillingLabel(pl.billing_cycle)+'</p>'+
+                    (pl.features&&pl.features.length?'<ul class="mt-1.5 space-y-0.5">'+pl.features.slice(0,2).map(function(f){return '<li class="text-[10px]" style="color:var(--text-muted);"><span style="color:var(--success);">✓</span> '+f+'</li>';}).join('')+'</ul>':'')+
+                    '<button onclick="event.stopPropagation();deletePlan(\''+p.id+'\',\''+pl.id+'\')" class="absolute top-1 right-1 p-1 rounded opacity-0 hover:opacity-100" style="color:var(--danger);"><svg class="w-3 h-3" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>'+
+                  '</div>';
+                }).join('')+
+              '</div>'+
+            '</div>'+
+            '<div>'+
+              '<div class="flex items-center justify-between mb-2">'+
+                '<h4 class="text-xs font-medium" style="color:var(--text-muted);">Adicionais ('+(p.addons||[]).length+')</h4>'+
+                '<button onclick="openAddonModal(\''+p.id+'\')" class="text-xs flex items-center gap-1" style="color:var(--success);"><svg class="w-3 h-3" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Novo</button>'+
+              '</div>'+
+              '<div class="flex flex-wrap gap-2">'+
+                (p.addons||[]).map(function(ad){
+                  return '<div class="addon-chip '+(ad.required?'required':'')+' flex items-center gap-2 px-2.5 py-1.5 cursor-pointer" onclick="editAddon(\''+p.id+'\',\''+ad.id+'\')">'+
+                    '<span class="text-xs font-medium">'+ad.name+'</span>'+
+                    '<span class="text-xs font-semibold" style="color:'+(ad.billing_cycle==='one_time'?'var(--warning)':'var(--success)')+';">'+formatCurrency(ad.price)+(ad.billing_cycle!=='one_time'?'/'+getBillingLabelShort(ad.billing_cycle):'')+'</span>'+
+                    (ad.required?'<span class="badge badge-required text-[10px] py-0.5 px-1.5">Obrig.</span>':'')+
+                    (ad.type==='setup'?'<span class="badge badge-setup text-[10px] py-0.5 px-1.5">Setup</span>':'')+
+                    '<button onclick="event.stopPropagation();deleteAddon(\''+p.id+'\',\''+ad.id+'\')" class="opacity-30 hover:opacity-100" style="color:var(--danger);"><svg class="w-3 h-3" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>'+
+                  '</div>';
+                }).join('')+
+                ((p.addons||[]).length===0?'<span class="text-xs italic" style="color:var(--text-muted);">Nenhum</span>':'')+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+    }
+    
+    function openCategoryModal(){document.getElementById('categoryModal').classList.remove('hidden');document.getElementById('categoryName').value='';document.getElementById('categoryDescription').value='';selectedIcon='package';document.getElementById('categoryIcon').value='package';updateIconPreview();document.getElementById('selectedIconName').textContent='package';}
+    function closeCategoryModal(){document.getElementById('categoryModal').classList.add('hidden');}
+    function saveCategory(){var n=document.getElementById('categoryName').value.trim();if(!n){alert('Informe o nome');return;}categories.push({id:'cat-'+Date.now(),name:n,description:document.getElementById('categoryDescription').value.trim(),icon:document.getElementById('categoryIcon').value});renderCatalog();closeCategoryModal();showToast('Categoria criada!');}
+    function deleteCategory(id){if(products.some(function(p){return p.category_id===id;})){alert('Remova os itens primeiro.');return;}if(!confirm('Excluir?'))return;categories=categories.filter(function(c){return c.id!==id;});renderCatalog();showToast('Excluida!');}
+    
+    function openProductModal(id,catId){document.getElementById('productModal').classList.remove('hidden');document.getElementById('productForm').reset();document.getElementById('productId').value=id||'';populateCategorySelects();if(catId)document.getElementById('productCategory').value=catId;if(id){var p=products.find(function(x){return x.id===id;});if(p){document.getElementById('productModalTitle').textContent='Editar Item';document.getElementById('productName').value=p.name;document.getElementById('productDescription').value=p.description||'';document.getElementById('productSku').value=p.sku||'';document.getElementById('productStatus').value=p.status;document.getElementById('productCategory').value=p.category_id;}}else{document.getElementById('productModalTitle').textContent='Novo Item';}}
+    function closeProductModal(){document.getElementById('productModal').classList.add('hidden');}
+    function saveProduct(e){e.preventDefault();var id=document.getElementById('productId').value||'prod-'+Date.now();var isNew=!document.getElementById('productId').value;var d={id:id,category_id:document.getElementById('productCategory').value,name:document.getElementById('productName').value,description:document.getElementById('productDescription').value,sku:document.getElementById('productSku').value,status:document.getElementById('productStatus').value,plans:[],addons:[]};if(isNew)products.push(d);else{var i=products.findIndex(function(p){return p.id===id;});if(i>=0){d.plans=products[i].plans;d.addons=products[i].addons;products[i]=d;}}renderCatalog();closeProductModal();showToast(isNew?'Criado!':'Atualizado!');}
+    function editProduct(id){openProductModal(id);}
+    function deleteProduct(id){if(!confirm('Excluir item e opcoes?'))return;products=products.filter(function(p){return p.id!==id;});renderCatalog();showToast('Excluido!');}
+    
+    function openPlanModal(prodId,planId){var prod=products.find(function(p){return p.id===prodId;});if(!prod)return;document.getElementById('planModal').classList.remove('hidden');document.getElementById('planForm').reset();document.getElementById('planId').value=planId||'';document.getElementById('planProductId').value=prodId;document.getElementById('planModalSubtitle').textContent='Item: '+prod.name;document.getElementById('planFeaturesList').innerHTML='';if(planId){var pl=prod.plans.find(function(x){return x.id===planId;});if(pl){document.getElementById('planModalTitle').textContent='Editar Opcao';document.getElementById('planName').value=pl.name;document.getElementById('planSku').value=pl.sku||'';document.getElementById('planDescription').value=pl.description||'';document.getElementById('planPrice').value=formatCurrencyValue(pl.price);document.getElementById('planBillingCycle').value=pl.billing_cycle;document.getElementById('planOrder').value=pl.order||'';(pl.features||[]).forEach(function(f){addPlanFeature(f);});}}else{document.getElementById('planModalTitle').textContent='Nova Opcao';document.getElementById('planOrder').value=(prod.plans||[]).length+1;}}
+    function closePlanModal(){document.getElementById('planModal').classList.add('hidden');}
+    function addPlanFeature(v){var c=document.getElementById('planFeaturesList');var d=document.createElement('div');d.className='flex items-center gap-2';d.innerHTML='<input type="text" class="plan-feature-input flex-1 px-3 py-2 rounded-lg text-sm" placeholder="Ex: 10 usuarios..." value="'+(v||'')+'"><button type="button" onclick="this.parentElement.remove()" class="p-1.5 rounded hover:bg-red-50" style="color:var(--danger);"><svg class="w-4 h-4" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';c.appendChild(d);}
+    function savePlan(e){e.preventDefault();var prodId=document.getElementById('planProductId').value;var planId=document.getElementById('planId').value||'plan-'+Date.now();var isNew=!document.getElementById('planId').value;var features=[];document.querySelectorAll('.plan-feature-input').forEach(function(i){if(i.value.trim())features.push(i.value.trim());});var d={id:planId,name:document.getElementById('planName').value,sku:document.getElementById('planSku').value,description:document.getElementById('planDescription').value,price:parseCurrency(document.getElementById('planPrice').value),billing_cycle:document.getElementById('planBillingCycle').value,order:parseInt(document.getElementById('planOrder').value)||1,features:features};var prod=products.find(function(p){return p.id===prodId;});if(prod){if(isNew){prod.plans=prod.plans||[];prod.plans.push(d);}else{var i=prod.plans.findIndex(function(x){return x.id===planId;});if(i>=0)prod.plans[i]=d;}}renderCatalog();closePlanModal();showToast(isNew?'Opcao criada!':'Atualizada!');}
+    function editPlan(prodId,planId){openPlanModal(prodId,planId);}
+    function deletePlan(prodId,planId){if(!confirm('Excluir?'))return;var p=products.find(function(x){return x.id===prodId;});if(p)p.plans=p.plans.filter(function(x){return x.id!==planId;});renderCatalog();showToast('Excluido!');}
+    
+    function openAddonModal(prodId,addonId){var prod=products.find(function(p){return p.id===prodId;});if(!prod)return;document.getElementById('addonModal').classList.remove('hidden');document.getElementById('addonForm').reset();document.getElementById('addonId').value=addonId||'';document.getElementById('addonProductId').value=prodId;document.getElementById('addonModalSubtitle').textContent='Item: '+prod.name;document.getElementById('addonCompatiblePlans').innerHTML=(prod.plans||[]).map(function(pl){return '<label class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg cursor-pointer text-xs" style="background:var(--bg-page);border:1px solid var(--border);"><input type="checkbox" class="addon-plan-checkbox" value="'+pl.id+'" style="accent-color:var(--primary);"><span>'+pl.name+'</span></label>';}).join('');if(addonId){var ad=(prod.addons||[]).find(function(x){return x.id===addonId;});if(ad){document.getElementById('addonModalTitle').textContent='Editar Adicional';document.getElementById('addonName').value=ad.name;document.getElementById('addonSku').value=ad.sku||'';document.getElementById('addonDescription').value=ad.description||'';document.getElementById('addonPrice').value=formatCurrencyValue(ad.price);document.getElementById('addonBillingCycle').value=ad.billing_cycle;document.getElementById('addonType').value=ad.type||'addon';document.getElementById('addonRequired').checked=ad.required||false;(ad.compatible_plans||[]).forEach(function(plId){var cb=document.querySelector('.addon-plan-checkbox[value="'+plId+'"]');if(cb)cb.checked=true;});}}else{document.getElementById('addonModalTitle').textContent='Novo Adicional';}}
+    function closeAddonModal(){document.getElementById('addonModal').classList.add('hidden');}
+    function saveAddon(e){e.preventDefault();var prodId=document.getElementById('addonProductId').value;var addonId=document.getElementById('addonId').value||'addon-'+Date.now();var isNew=!document.getElementById('addonId').value;var compatible=[];document.querySelectorAll('.addon-plan-checkbox:checked').forEach(function(cb){compatible.push(cb.value);});var d={id:addonId,name:document.getElementById('addonName').value,sku:document.getElementById('addonSku').value,description:document.getElementById('addonDescription').value,price:parseCurrency(document.getElementById('addonPrice').value),billing_cycle:document.getElementById('addonBillingCycle').value,type:document.getElementById('addonType').value,compatible_plans:compatible,required:document.getElementById('addonRequired').checked};var prod=products.find(function(p){return p.id===prodId;});if(prod){if(isNew){prod.addons=prod.addons||[];prod.addons.push(d);}else{var i=prod.addons.findIndex(function(x){return x.id===addonId;});if(i>=0)prod.addons[i]=d;}}renderCatalog();closeAddonModal();showToast(isNew?'Criado!':'Atualizado!');}
+    function editAddon(prodId,addonId){openAddonModal(prodId,addonId);}
+    function deleteAddon(prodId,addonId){if(!confirm('Excluir?'))return;var p=products.find(function(x){return x.id===prodId;});if(p)p.addons=p.addons.filter(function(x){return x.id!==addonId;});renderCatalog();showToast('Excluido!');}
+    
+    function populateCategorySelects(){var s=document.getElementById('productCategory');if(s)s.innerHTML='<option value="">Selecione...</option>'+categories.map(function(c){return '<option value="'+c.id+'">'+c.name+'</option>';}).join('');}
+    function formatCurrency(v){return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(v||0);}
+    function formatCurrencyValue(v){return (v||0).toFixed(2).replace('.',',');}
+    function formatCurrencyInput(inp){var v=inp.value.replace(/\D/g,'');v=(parseInt(v||0)/100).toFixed(2);inp.value=v.replace('.',',');}
+    function parseCurrency(v){if(!v)return 0;return parseFloat(v.toString().replace(/\./g,'').replace(',','.'))||0;}
+    function getBillingLabel(c){var l={one_time:'Pagamento unico',monthly:'Mensal',quarterly:'Trimestral',semiannual:'Semestral',yearly:'Anual'};return l[c]||c;}
+    function getBillingLabelShort(c){var l={one_time:'',monthly:'mes',quarterly:'trim',semiannual:'sem',yearly:'ano'};return l[c]||c;}
+    function showToast(msg){var t=document.getElementById('toast');document.getElementById('toast-message').textContent=msg;t.classList.remove('hidden');setTimeout(function(){t.classList.add('hidden');},3000);}
+    
+    document.addEventListener('DOMContentLoaded',function(){updateIconPreview();initializeApp();});
   </script>
 </body>
 </html>
