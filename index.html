@@ -411,22 +411,27 @@
       }
 
       console.log(`Buscando conta com helena_account_id: ${helenaAccountId}`);
-      const { data: accountData, error: accountError } = await supabase
-        .from('accounts')
-        .select('id, company_name')
-        .eq('helena_account_id', helenaAccountId)
-        .single();
+      try {
+        const { data: accountData, error: accountError } = await supabase
+          .from('accounts')
+          .select('id, company_name')
+          .eq('helena_account_id', helenaAccountId)
+          .single();
 
-      if (accountError || !accountData) {
-        console.error('Erro ao buscar conta:', accountError);
-        document.getElementById('catalogTree').innerHTML = '<div class="card p-10 text-center"><h3 class="text-lg font-medium">Conta não encontrada</h3><p class="text-sm text-gray-500">Verifique o ID fornecido.</p></div>';
-        return;
+        if (accountError || !accountData) {
+          console.error('Erro ao buscar conta:', accountError);
+          document.getElementById('catalogTree').innerHTML = '<div class="card p-10 text-center"><h3 class="text-lg font-medium">Conta não encontrada</h3><p class="text-sm text-gray-500">Verifique o ID fornecido.</p></div>';
+          return;
+        }
+
+        currentAccount = accountData;
+        console.log('Conta encontrada:', currentAccount);
+
+        await loadData();
+      } catch (err) {
+        console.error('Erro na inicialização:', err);
+        document.getElementById('catalogTree').innerHTML = '<div class="card p-10 text-center"><h3 class="text-lg font-medium">Erro ao conectar</h3><p class="text-sm text-gray-500">' + err.message + '</p></div>';
       }
-
-      currentAccount = accountData;
-      console.log('Conta encontrada:', currentAccount);
-
-      await loadData();
     }
 
     async function loadData() {
@@ -592,6 +597,36 @@
     function getBillingLabel(c){var l={one_time:'Pagamento unico',monthly:'Mensal',quarterly:'Trimestral',semiannual:'Semestral',yearly:'Anual'};return l[c]||c;}
     function getBillingLabelShort(c){var l={one_time:'',monthly:'mes',quarterly:'trim',semiannual:'sem',yearly:'ano'};return l[c]||c;}
     function showToast(msg){var t=document.getElementById('toast');document.getElementById('toast-message').textContent=msg;t.classList.remove('hidden');setTimeout(function(){t.classList.add('hidden');},3000);}
+    
+    // Expor funções globalmente para os botões HTML
+    window.toggleCategory = (catId) => { collapsedCategories[catId] = !collapsedCategories[catId]; renderCatalog(); }
+    window.toggleProduct = (prodId) => { collapsedProducts[prodId] = !collapsedProducts[prodId]; renderCatalog(); }
+    window.openCategoryModal = openCategoryModal;
+    window.closeProductModal = closeProductModal;
+    window.openProductModal = openProductModal;
+    window.deleteCategory = deleteCategory;
+    window.deleteProduct = deleteProduct;
+    window.openPlanModal = openPlanModal;
+    window.closePlanModal = closePlanModal;
+    window.openAddonModal = openAddonModal;
+    window.closeAddonModal = closeAddonModal;
+    window.editProduct = editProduct;
+    window.editPlan = editPlan;
+    window.editAddon = editAddon;
+    window.deletePlan = deletePlan;
+    window.deleteAddon = deleteAddon;
+    window.openIconPicker = openIconPicker;
+    window.closeIconPicker = closeIconPicker;
+    window.filterIcons = filterIcons;
+    window.selectIcon = selectIcon;
+    window.confirmIconSelection = confirmIconSelection;
+    window.saveCategory = saveCategory;
+    window.closeCategoryModal = closeCategoryModal;
+    window.saveProduct = saveProduct;
+    window.savePlan = savePlan;
+    window.saveAddon = saveAddon;
+    window.addPlanFeature = addPlanFeature;
+    window.formatCurrencyInput = formatCurrencyInput;
     
     document.addEventListener('DOMContentLoaded',function(){updateIconPreview();initializeApp();});
   </script>
