@@ -87,8 +87,6 @@
     // ==================== CONFIGURAÇÃO ====================
     const SB_URL = 'https://supabase.atenza.digital';
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
-    const HELENA_API_URL = 'https://api.helena.run/core/v1';
-    const HELENA_API_TOKEN = 'pn_4lVzRMQpUUoQZBiyArrgLnSkQMb1ZOfUrw5Ws1Fc09c';
 
     let sb;
     let currentAccount = null;
@@ -101,76 +99,39 @@
         // Criar cliente Supabase
         sb = window.supabase.createClient(SB_URL, SB_KEY);
         
-        // Obter ID da conta da URL
+        // Obter helena_account_id da URL
         const params = new URLSearchParams(window.location.search);
-        const accountId = params.get('id');
+        const helenAccountId = params.get('id');
         
-        if (!accountId) {
+        if (!helenAccountId) {
           console.error('Nenhum ID de conta fornecido');
           showError('ID de conta não fornecido');
           return;
         }
         
-        console.log('Buscando conta com ID:', accountId);
+        console.log('Buscando conta com helena_account_id:', helenAccountId);
         
-        // Tentar buscar conta por helena_account_id (prioridade 1)
-        let { data: accounts, error } = await sb
+        // Buscar conta por helena_account_id
+        const { data: accounts, error } = await sb
           .from('accounts')
           .select('*')
-          .eq('helena_account_id', accountId)
+          .eq('helena_account_id', helenAccountId)
           .limit(1);
         
-        // Se não encontrar, tentar por id (UUID da conta local)
-        if (!accounts || accounts.length === 0) {
-          const { data: accounts2 } = await sb
-            .from('accounts')
-            .select('*')
-            .eq('id', accountId)
-            .limit(1);
-          accounts = accounts2;
+        if (error || !accounts || accounts.length === 0) {
+          console.error('Erro ao buscar conta:', error);
+          showError('Conta não encontrada');
+          return;
         }
         
-        // Se ainda não encontrar, tentar por helena_id
-        if (!accounts || accounts.length === 0) {
-          const { data: accounts3 } = await sb
-            .from('accounts')
-            .select('*')
-            .eq('helena_id', accountId)
-            .limit(1);
-          accounts = accounts3;
-        }
-        
-        if (!accounts || accounts.length === 0) {
-          // Tentar buscar dados do HelenaCRM
-          const helenData = await fetchHelenaCRMData(accountId);
-          if (helenData) {
-            // Criar conta local com dados do HelenaCRM
-            const { data: newAccount } = await sb
-              .from('accounts')
-              .insert([{
-                helena_id: accountId,
-                name: helenData.name || 'Sem nome',
-                email: helenData.email || '',
-                logo_url: helenData.pictureUrl || null
-              }])
-              .select()
-              .single();
-            currentAccount = newAccount;
-          } else {
-            showError('Conta não encontrada');
-            return;
-          }
-        } else {
-          currentAccount = accounts[0];
-        }
-        
+        currentAccount = accounts[0];
         console.log('Conta carregada:', currentAccount);
         
         // Atualizar informações da empresa
         document.getElementById('companyName').textContent = currentAccount.name || 'Sem nome';
         document.getElementById('companyEmail').textContent = currentAccount.email || '';
         
-        // Carregar dados
+        // Carregar dados usando o id local da conta
         await loadCategories();
         await loadProducts();
         renderCatalog();
@@ -181,52 +142,17 @@
       }
     }
 
-    // ==================== HELENA CRM API ====================
-    async function fetchHelenaCRMData(helenId) {
-      try {
-        console.log('Buscando dados do HelenaCRM:', helenId);
-        const response = await fetch(`${HELENA_API_URL}/company/${helenId}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${HELENA_API_TOKEN}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        if (!response.ok) {
-          console.warn('Erro ao buscar dados do HelenaCRM:', response.status);
-          return null;
-        }
-        
-        const data = await response.json();
-        console.log('Dados do HelenaCRM:', data);
-        return data;
-      } catch (err) {
-        console.error('Erro ao buscar dados do HelenaCRM:', err);
-        return null;
-      }
-    }
-
     // ==================== CARREGAMENTO DE DADOS ====================
     async function loadCategories() {
       if (!currentAccount) return;
       
-      // Buscar categorias pelo account_id local
-      let { data, error } = await sb
+      console.log('Carregando categorias para account_id:', currentAccount.id);
+      
+      const { data, error } = await sb
         .from('categories')
         .select('*')
         .eq('account_id', currentAccount.id)
-        .order('display_order');
-      
-      // Se não encontrar, tentar buscar pelo helena_id (se existir)
-      if ((!data || data.length === 0) && currentAccount.helena_id) {
-        const { data: data2 } = await sb
-          .from('categories')
-          .select('*')
-          .eq('account_id', currentAccount.helena_id)
-          .order('display_order');
-        data = data2;
-      }
+        .order('display_order', { ascending: true });
       
       if (error) {
         console.error('Erro ao carregar categorias:', error);
@@ -234,28 +160,19 @@
       }
       
       categories = data || [];
-      console.log('Categorias carregadas:', categories.length);
+      console.log('Categorias carregadas:', categories.length, categories);
     }
 
     async function loadProducts() {
       if (!currentAccount) return;
       
-      // Buscar produtos pelo account_id local
-      let { data, error } = await sb
+      console.log('Carregando produtos para account_id:', currentAccount.id);
+      
+      const { data, error } = await sb
         .from('products')
         .select('*')
         .eq('account_id', currentAccount.id)
-        .order('display_order');
-      
-      // Se não encontrar, tentar buscar pelo helena_id (se existir)
-      if ((!data || data.length === 0) && currentAccount.helena_id) {
-        const { data: data2 } = await sb
-          .from('products')
-          .select('*')
-          .eq('account_id', currentAccount.helena_id)
-          .order('display_order');
-        data = data2;
-      }
+        .order('display_order', { ascending: true });
       
       if (error) {
         console.error('Erro ao carregar produtos:', error);
@@ -263,7 +180,7 @@
       }
       
       products = data || [];
-      console.log('Produtos carregados:', products.length);
+      console.log('Produtos carregados:', products.length, products);
     }
 
     // ==================== RENDERIZAÇÃO ====================
@@ -277,29 +194,31 @@
       
       let html = '';
       
-      // Renderizar categorias
+      // Renderizar categorias com seus produtos
       categories.forEach(cat => {
         const catProducts = products.filter(p => p.category_id === cat.id);
         html += `
           <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center gap-3 mb-4">
               <span class="text-3xl">${cat.icon || '📦'}</span>
-              <h3 class="text-lg font-bold">${cat.name}</h3>
+              <div>
+                <h3 class="font-bold text-lg">${cat.name}</h3>
+                <p class="text-sm text-gray-600">${catProducts.length} item(ns)</p>
+              </div>
             </div>
-            <p class="text-gray-600 text-sm mb-4">${cat.description || ''}</p>
-            <div class="text-sm text-gray-500">${catProducts.length} produto(s)</div>
-          </div>
-        `;
-      });
-      
-      // Renderizar produtos sem categoria
-      const uncategorized = products.filter(p => !p.category_id);
-      uncategorized.forEach(prod => {
-        html += `
-          <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-bold mb-2">${prod.name}</h3>
-            <p class="text-gray-600 text-sm mb-2">${prod.description || ''}</p>
-            <p class="text-xs text-gray-500">SKU: ${prod.sku || 'N/A'}</p>
+            <div class="space-y-2">
+              ${catProducts.map(p => `
+                <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+                  <div>
+                    <p class="font-medium">${p.name}</p>
+                    <p class="text-xs text-gray-600">${p.description || ''}</p>
+                  </div>
+                  <button onclick="selectProduct('${p.id}')" class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
+                    Selecionar
+                  </button>
+                </div>
+              `).join('')}
+            </div>
           </div>
         `;
       });
@@ -310,7 +229,6 @@
     // ==================== MODAIS ====================
     function openCategoryModal() {
       document.getElementById('categoryModal').classList.remove('hidden');
-      document.getElementById('categoryName').focus();
     }
 
     function closeCategoryModal() {
@@ -319,48 +237,14 @@
       document.getElementById('categoryIcon').value = '';
     }
 
-    async function saveCategory() {
-      const name = document.getElementById('categoryName').value.trim();
-      const icon = document.getElementById('categoryIcon').value.trim() || 'package';
-      
-      if (!name) {
-        alert('Nome da categoria é obrigatório');
-        return;
-      }
-      
-      if (!currentAccount) {
-        alert('Conta não carregada');
-        return;
-      }
-      
-      const { error } = await sb
-        .from('categories')
-        .insert([{
-          account_id: currentAccount.id,
-          name,
-          icon,
-          display_order: categories.length
-        }]);
-      
-      if (error) {
-        console.error('Erro ao salvar categoria:', error);
-        alert('Erro ao salvar categoria');
-        return;
-      }
-      
-      closeCategoryModal();
-      await loadCategories();
-      renderCatalog();
-    }
-
     function openProductModal() {
+      document.getElementById('productModal').classList.remove('hidden');
+      // Preencher dropdown de categorias
       const select = document.getElementById('productCategory');
-      select.innerHTML = '<option value="">Sem categoria</option>';
+      select.innerHTML = '<option value="">Selecione uma categoria</option>';
       categories.forEach(cat => {
         select.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
       });
-      document.getElementById('productModal').classList.remove('hidden');
-      document.getElementById('productName').focus();
     }
 
     function closeProductModal() {
@@ -371,33 +255,59 @@
       document.getElementById('productCategory').value = '';
     }
 
-    async function saveProduct() {
-      const name = document.getElementById('productName').value.trim();
-      const sku = document.getElementById('productSKU').value.trim();
-      const description = document.getElementById('productDescription').value.trim();
-      const categoryId = document.getElementById('productCategory').value || null;
+    // ==================== SALVAR DADOS ====================
+    async function saveCategory() {
+      const name = document.getElementById('categoryName').value;
+      const icon = document.getElementById('categoryIcon').value;
       
       if (!name) {
-        alert('Nome do produto é obrigatório');
+        alert('Nome da categoria é obrigatório');
         return;
       }
       
-      if (!currentAccount) {
-        alert('Conta não carregada');
+      const { data, error } = await sb
+        .from('categories')
+        .insert([{
+          account_id: currentAccount.id,
+          name: name,
+          icon: icon || '📦',
+          display_order: categories.length + 1
+        }])
+        .select();
+      
+      if (error) {
+        console.error('Erro ao salvar categoria:', error);
+        alert('Erro ao salvar categoria');
         return;
       }
       
-      const { error } = await sb
+      categories.push(data[0]);
+      renderCatalog();
+      closeCategoryModal();
+    }
+
+    async function saveProduct() {
+      const name = document.getElementById('productName').value;
+      const sku = document.getElementById('productSKU').value;
+      const description = document.getElementById('productDescription').value;
+      const categoryId = document.getElementById('productCategory').value;
+      
+      if (!name || !categoryId) {
+        alert('Nome e categoria são obrigatórios');
+        return;
+      }
+      
+      const { data, error } = await sb
         .from('products')
         .insert([{
           account_id: currentAccount.id,
           category_id: categoryId,
-          name,
-          sku,
-          description,
-          status: 'active',
-          display_order: products.length
-        }]);
+          name: name,
+          sku: sku,
+          description: description,
+          display_order: products.length + 1
+        }])
+        .select();
       
       if (error) {
         console.error('Erro ao salvar produto:', error);
@@ -405,19 +315,25 @@
         return;
       }
       
-      closeProductModal();
-      await loadProducts();
+      products.push(data[0]);
       renderCatalog();
+      closeProductModal();
     }
 
-    // ==================== UTILITÁRIOS ====================
+    function selectProduct(productId) {
+      console.log('Produto selecionado:', productId);
+      // Aqui você pode adicionar lógica para selecionar o produto
+      alert('Produto selecionado: ' + productId);
+    }
+
     function showError(message) {
+      console.error(message);
       const container = document.getElementById('categoriesContainer');
       container.innerHTML = `<div class="col-span-full text-center py-12 text-red-500">${message}</div>`;
     }
 
-    // Iniciar quando o DOM estiver pronto
-    document.addEventListener('DOMContentLoaded', init);
+    // Inicializar ao carregar a página
+    window.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
