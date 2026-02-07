@@ -446,7 +446,7 @@
         }
       });
       const params = new URLSearchParams(window.location.search);
-      const accId = params.get('account_id') || 'teste-atenza-123';
+      const accId = params.get('id') || params.get('account_id') || 'teste-atenza-123';
       
       console.log('🔍 Buscando conta para:', accId);
       let {data: acc, error: accError} = await sb.from('accounts').select('id').eq('helena_account_id', accId).maybeSingle();
