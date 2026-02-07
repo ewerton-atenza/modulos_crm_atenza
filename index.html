@@ -631,7 +631,14 @@
     window.addPlanFeature = addPlanFeature;
     window.formatCurrencyInput = formatCurrencyInput;
     
-    document.addEventListener('DOMContentLoaded',function(){updateIconPreview();initializeApp();});
+    console.log('Script carregado');
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded',function(){console.log('DOMContentLoaded disparado');updateIconPreview();initializeApp();});
+    } else {
+      console.log('DOM já carregado, executando initializeApp');
+      updateIconPreview();
+      initializeApp();
+    }
   </script>
 </body>
 </html>
