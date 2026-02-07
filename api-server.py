@@ -12,7 +12,7 @@ DB_CONFIG = {
     'port': 5432,
     'database': 'postgres',
     'user': 'postgres',
-    'password': 'your-super-secret-and-long-postgres-password'
+    'password': 'atenza515351'
 }
 
 def get_db_connection():
