@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(curl:*)",
+      "Bash(ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no root@212.85.17.2 \"echo ''ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDRbS657wISOWvzAKlGx1v+6kJ1jai2pjQJuGLgXEZjK deploy-github-actions'' >> ~/.ssh/authorized_keys && echo ''Chave adicionada com sucesso''\")",
+      "Bash(pip install:*)",
+      "Bash(python3:*)",
+      "Bash(ssh:*)"
+    ]
+  }
+}
