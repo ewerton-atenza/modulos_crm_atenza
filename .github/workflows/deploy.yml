@@ -24,13 +24,11 @@ jobs:
           
       - name: 🚀 Enviar arquivos via SCP
         run: |
-          # Envia todos os arquivos necessários para o Docker (Dockerfile, docker-compose, src, etc)
-          scp -i ~/.ssh/id_rsa -r ./* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/u937514520/domains/catalog.atenza.digital/public_html/
-          
+          scp -i ~/.ssh/id_rsa -r ./Dockerfile ./docker-compose.yml ./src ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/root/modulos_crm_atenza/
+
       - name: 🐳 Atualizar Docker na VPS
         run: |
-          # Acessa a VPS, entra na pasta e recria o container com a nova build
-          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd /home/u937514520/domains/catalog.atenza.digital/public_html/ && docker compose up -d --build"
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd /root/modulos_crm_atenza && docker compose up -d --build"
           
       - name: ✅ Verificar deploy
         run: |
