@@ -1,37 +1,33 @@
-name: Deploy para Hostinger
+name: Deploy to VPS
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   deploy:
-    name: Deploy Catálogo
     runs-on: ubuntu-latest
     
     steps:
-      - name: 📥 Checkout código
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
       
-      - name: 🔐 Setup SSH
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            cd /root/modulos_crm_atenza
+            git pull origin main
+            docker-compose down
+            docker-compose up -d
+            docker-compose ps
+      
+      - name: Notify deployment
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
-          echo "StrictHostKeyChecking no" >> ~/.ssh/config
-
-      - name: 🚀 Enviar arquivos via SCP
-        run: |
-          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -r ./Dockerfile ./docker-compose.yml ./src ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/root/modulos_crm_atenza/
-
-      - name: 🐳 Atualizar Docker na VPS
-        run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd /root/modulos_crm_atenza && docker compose up -d --build"
-          
-      - name: ✅ Verificar deploy
-        run: |
-          echo "✅ Deploy e Docker atualizados com sucesso!"
-          echo "🌐 URL: https://catalog.atenza.digital"
+          echo "✅ Deployment successful!"
+          echo "Application available at: http://212.85.17.2:3001"
