@@ -1,0 +1,449 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Negocios - Catalogo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    :root {
+      --primary: #3850A0;
+      --primary-dark: #2A407E;
+      --bg-page: #F8F9FA;
+      --bg-card: #FFFFFF;
+      --border: #E5E7EB;
+      --text-dark: #1F2937;
+      --text-muted: #9CA3AF;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --danger: #EF4444;
+    }
+    .btn-primary { background: var(--primary); color: white; font-weight: 500; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary { background: white; border: 1px solid var(--border); color: var(--text-dark); }
+    .btn-secondary:hover { background: var(--bg-page); }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; }
+    .plan-card { background: var(--bg-page); border: 1px solid var(--border); border-radius: 10px; }
+    .plan-card:hover { border-color: var(--primary); background: white; }
+    .addon-chip { background: var(--bg-page); border: 1px solid var(--border); border-radius: 8px; }
+    .addon-chip:hover { border-color: var(--primary); background: white; }
+    .addon-chip.required { border-color: var(--warning); background: #FFFBEB; }
+    .modal-backdrop { background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); }
+    input, select, textarea { background: white !important; border: 1px solid var(--border) !important; color: var(--text-dark) !important; }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary) !important; outline: none; }
+    .category-header { background: linear-gradient(90deg, rgba(56, 80, 160, 0.05) 0%, transparent 100%); }
+    .badge { font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; }
+    .badge-active { background: #ECFDF5; color: #059669; }
+    .badge-inactive { background: #F3F4F6; color: #6B7280; }
+    .badge-required { background: #FEF3C7; color: #B45309; }
+    .badge-setup { background: #FEF3C7; color: #B45309; }
+    .badge-count { background: #EEF2FF; color: var(--primary); }
+    .icon-box { background: #EEF2FF; color: var(--primary); }
+    .collapse-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+    .collapse-content.open { max-height: 5000px; transition: max-height 0.5s ease-in; }
+    .chevron { transition: transform 0.3s; }
+    .chevron.open { transform: rotate(180deg); }
+    .icon-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; max-height: 300px; overflow-y: auto; }
+    .icon-item { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; }
+    .icon-item:hover { border-color: var(--primary); background: #EEF2FF; }
+    .icon-item.selected { border-color: var(--primary); background: var(--primary); }
+    .icon-item.selected svg { stroke: white; }
+    svg { stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+</head>
+<body style="background: var(--bg-page); color: var(--text-dark); min-height: 100vh;">
+  
+  <header class="px-6 py-4 border-b" style="background: white; border-color: var(--border);">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg flex items-center justify-center icon-box">
+          <svg class="w-5 h-5" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        </div>
+        <div>
+          <h1 class="text-lg font-semibold">Catalogo</h1>
+          <p class="text-xs" style="color: var(--text-muted);">Produtos, servicos e opcoes</p>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="openCategoryModal()" class="btn-secondary flex items-center gap-2 px-4 py-2 rounded-lg text-sm">
+          <svg class="w-4 h-4" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          Nova Categoria
+        </button>
+        <button onclick="openProductModal()" class="btn-primary flex items-center gap-2 px-4 py-2 rounded-lg text-sm">
+          <svg class="w-4 h-4" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Novo Item
+        </button>
+      </div>
+    </div>
+  </header>
+  
+  <main class="p-6">
+    <div class="space-y-4" id="catalogTree"></div>
+  </main>
+  
+  <!-- Modal: Produto -->
+  <div id="productModal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-backdrop absolute inset-0" onclick="closeProductModal()"></div>
+    <div class="absolute inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-lg rounded-xl overflow-hidden flex flex-col max-h-[90vh] bg-white shadow-xl">
+      <div class="px-5 py-4 border-b flex items-center justify-between" style="border-color: var(--border);">
+        <h2 class="text-base font-semibold" id="productModalTitle">Novo Item</h2>
+        <button onclick="closeProductModal()" class="p-1 rounded hover:bg-gray-100">
+          <svg class="w-5 h-5" style="color: var(--text-muted);" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto p-5">
+        <form id="productForm" onsubmit="saveProduct(event)">
+          <input type="hidden" id="productId">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium mb-1.5">Categoria *</label>
+              <select id="productCategory" required class="w-full px-3 py-2.5 rounded-lg text-sm"><option value="">Selecione...</option></select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1.5">Nome *</label>
+              <input type="text" id="productName" required class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="Ex: Sistema de Gestao...">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1.5">Descricao</label>
+              <textarea id="productDescription" rows="2" class="w-full px-3 py-2.5 rounded-lg text-sm resize-none" placeholder="Descricao..."></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Codigo/SKU</label>
+                <input type="text" id="productSku" class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="PROD-001">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Status</label>
+                <select id="productStatus" class="w-full px-3 py-2.5 rounded-lg text-sm"><option value="active">Ativo</option><option value="inactive">Inativo</option></select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="px-5 py-4 border-t flex justify-end gap-2" style="background: var(--bg-page); border-color: var(--border);">
+        <button onclick="closeProductModal()" class="btn-secondary px-4 py-2 rounded-lg text-sm">Cancelar</button>
+        <button type="submit" form="productForm" class="btn-primary px-4 py-2 rounded-lg text-sm">Salvar</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal: Opcao -->
+  <div id="planModal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-backdrop absolute inset-0" onclick="closePlanModal()"></div>
+    <div class="absolute inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-lg rounded-xl overflow-hidden flex flex-col max-h-[90vh] bg-white shadow-xl">
+      <div class="px-5 py-4 border-b flex items-center justify-between" style="border-color: var(--border);">
+        <div>
+          <h2 class="text-base font-semibold" id="planModalTitle">Nova Opcao</h2>
+          <p class="text-xs" id="planModalSubtitle" style="color: var(--text-muted);">Item: -</p>
+        </div>
+        <button onclick="closePlanModal()" class="p-1 rounded hover:bg-gray-100">
+          <svg class="w-5 h-5" style="color: var(--text-muted);" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto p-5">
+        <form id="planForm" onsubmit="savePlan(event)">
+          <input type="hidden" id="planId"><input type="hidden" id="planProductId">
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Nome *</label>
+                <input type="text" id="planName" required class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="Ex: Basico...">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Codigo/SKU</label>
+                <input type="text" id="planSku" class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="OPC-001">
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1.5">Descricao</label>
+              <textarea id="planDescription" rows="2" class="w-full px-3 py-2.5 rounded-lg text-sm resize-none" placeholder="O que esta incluido..."></textarea>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Preco *</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm" style="color: var(--text-muted);">R$</span>
+                  <input type="text" id="planPrice" required class="w-full pl-10 pr-3 py-2.5 rounded-lg text-sm" placeholder="0,00" oninput="formatCurrencyInput(this)">
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Ciclo</label>
+                <select id="planBillingCycle" class="w-full px-3 py-2.5 rounded-lg text-sm">
+                  <option value="one_time">Unico</option><option value="monthly">Mensal</option><option value="quarterly">Trimestral</option><option value="semiannual">Semestral</option><option value="yearly">Anual</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Ordem</label>
+                <input type="number" id="planOrder" class="w-full px-3 py-2.5 rounded-lg text-sm" value="1" min="1">
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1.5">Recursos</label>
+              <div id="planFeaturesList" class="space-y-2"></div>
+              <button type="button" onclick="addPlanFeature()" class="mt-2 text-sm flex items-center gap-1" style="color:var(--primary);"><svg class="w-3 h-3" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Adicionar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="px-5 py-4 border-t flex justify-end gap-2" style="background: var(--bg-page); border-color: var(--border);">
+        <button onclick="closePlanModal()" class="btn-secondary px-4 py-2 rounded-lg text-sm">Cancelar</button>
+        <button type="submit" form="planForm" class="btn-primary px-4 py-2 rounded-lg text-sm">Salvar</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal: Adicional -->
+  <div id="addonModal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-backdrop absolute inset-0" onclick="closeAddonModal()"></div>
+    <div class="absolute inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-lg rounded-xl overflow-hidden flex flex-col max-h-[90vh] bg-white shadow-xl">
+      <div class="px-5 py-4 border-b flex items-center justify-between" style="border-color: var(--border);">
+        <div>
+          <h2 class="text-base font-semibold" id="addonModalTitle">Novo Adicional</h2>
+          <p class="text-xs" id="addonModalSubtitle" style="color: var(--text-muted);">Item: -</p>
+        </div>
+        <button onclick="closeAddonModal()" class="p-1 rounded hover:bg-gray-100">
+          <svg class="w-5 h-5" style="color: var(--text-muted);" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto p-5">
+        <form id="addonForm" onsubmit="saveAddon(event)">
+          <input type="hidden" id="addonId"><input type="hidden" id="addonProductId">
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Nome *</label>
+                <input type="text" id="addonName" required class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="Ex: Forca de Vendas...">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Codigo/SKU</label>
+                <input type="text" id="addonSku" class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="ADC-001">
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1.5">Descricao</label>
+              <textarea id="addonDescription" rows="2" class="w-full px-3 py-2.5 rounded-lg text-sm resize-none" placeholder="O que esta incluido..."></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Preco *</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm" style="color: var(--text-muted);">R$</span>
+                  <input type="text" id="addonPrice" required class="w-full pl-10 pr-3 py-2.5 rounded-lg text-sm" placeholder="0,00" oninput="formatCurrencyInput(this)">
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Ciclo</label>
+                <select id="addonBillingCycle" class="w-full px-3 py-2.5 rounded-lg text-sm">
+                  <option value="one_time">Unico</option><option value="monthly">Mensal</option><option value="quarterly">Trimestral</option><option value="semiannual">Semestral</option><option value="yearly">Anual</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1.5">Tipo</label>
+              <select id="addonType" class="w-full px-3 py-2.5 rounded-lg text-sm">
+                <option value="addon">Adicional</option><option value="setup">Taxa de Setup</option><option value="tax">Imposto</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1.5">Opcoes Compativeis</label>
+              <div id="addonCompatiblePlans" class="flex flex-wrap gap-2"></div>
+            </div>
+            <div>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="addonRequired" style="accent-color:var(--warning);">
+                <span class="text-sm font-medium">Obrigatorio</span>
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="px-5 py-4 border-t flex justify-end gap-2" style="background: var(--bg-page); border-color: var(--border);">
+        <button onclick="closeAddonModal()" class="btn-secondary px-4 py-2 rounded-lg text-sm">Cancelar</button>
+        <button type="submit" form="addonForm" class="btn-primary px-4 py-2 rounded-lg text-sm">Salvar</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal: Categoria -->
+  <div id="categoryModal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-backdrop absolute inset-0" onclick="closeCategoryModal()"></div>
+    <div class="absolute inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-lg rounded-xl overflow-hidden flex flex-col max-h-[90vh] bg-white shadow-xl">
+      <div class="px-5 py-4 border-b flex items-center justify-between" style="border-color: var(--border);">
+        <h2 class="text-base font-semibold">Nova Categoria</h2>
+        <button onclick="closeCategoryModal()" class="p-1 rounded hover:bg-gray-100">
+          <svg class="w-5 h-5" style="color: var(--text-muted);" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto p-5">
+        <input type="hidden" id="categoryIcon" value="package">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Nome *</label>
+            <input type="text" id="categoryName" required class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="Ex: Software...">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Descricao</label>
+            <textarea id="categoryDescription" rows="2" class="w-full px-3 py-2.5 rounded-lg text-sm resize-none" placeholder="Descricao da categoria..."></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Icone</label>
+            <div onclick="openIconPicker()" class="w-full px-3 py-2.5 rounded-lg text-sm flex items-center justify-between cursor-pointer" style="border:1px solid var(--border);">
+              <div class="flex items-center gap-2">
+                <span id="selectedIconPreview"></span>
+                <span id="selectedIconName"></span>
+              </div>
+              <span style="color:var(--text-muted);">Alterar</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="px-5 py-4 border-t flex justify-end gap-2" style="background: var(--bg-page); border-color: var(--border);">
+        <button onclick="closeCategoryModal()" class="btn-secondary px-4 py-2 rounded-lg text-sm">Cancelar</button>
+        <button onclick="saveCategory()" class="btn-primary px-4 py-2 rounded-lg text-sm">Criar</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal: Icon Picker -->
+  <div id="iconPickerModal" class="fixed inset-0 z-[60] hidden">
+    <div class="modal-backdrop absolute inset-0" onclick="closeIconPicker()"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md rounded-xl overflow-hidden bg-white shadow-xl">
+      <div class="px-5 py-4 border-b flex items-center justify-between" style="border-color: var(--border);">
+        <h2 class="text-base font-semibold">Selecione um Icone</h2>
+        <button onclick="closeIconPicker()" class="p-1 rounded hover:bg-gray-100">
+          <svg class="w-5 h-5" style="color: var(--text-muted);" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="p-5">
+        <div class="relative mb-4">
+          <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style="color: var(--text-muted);" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="iconSearch" class="w-full pl-10 pr-3 py-2.5 rounded-lg text-sm" placeholder="Pesquisar icones..." oninput="filterIcons(this.value)">
+        </div>
+        <div id="iconGrid" class="icon-grid"></div>
+      </div>
+      <div class="px-5 py-4 border-t flex justify-end gap-2" style="background: var(--bg-page); border-color: var(--border);">
+        <button onclick="closeIconPicker()" class="btn-secondary px-4 py-2 rounded-lg text-sm">Cancelar</button>
+        <button onclick="confirmIconSelection()" class="btn-primary px-4 py-2 rounded-lg text-sm">Salvar</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-4 right-4 z-50 hidden">
+    <div class="px-4 py-3 rounded-lg flex items-center gap-2 shadow-lg" style="background: var(--text-dark); color: white;">
+      <svg class="w-4 h-4" style="color: #34D399;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      <span id="toast-message" class="text-sm">Sucesso!</span>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    const supabaseUrl = 'https://supabase.atenza.digital';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR3ZHFkcXpxc3J4dG1xd2R1enh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTk0MjQyODcsImV4cCI6MjAzNDk5OTY4N30.n2n2bE92GqGSs2FNv1n-lZ1zVd33J7I2j2a2Yot2e-U';
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    let currentAccount = null;
+    let categories = [];
+    let products = [];
+    var collapsedCategories = {};
+    var collapsedProducts = {};
+
+    async function initializeApp() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const helenaAccountId = urlParams.get('id');
+
+      if (!helenaAccountId) {
+        document.getElementById('catalogTree').innerHTML = '<div class="card p-10 text-center"><h3 class="text-lg font-medium">ID da conta não fornecido.</h3></div>';
+        return;
+      }
+
+      console.log(`Buscando conta com helena_account_id: ${helenaAccountId}`);
+      const { data: accountData, error: accountError } = await supabase
+        .from('accounts')
+        .select('id, company_name')
+        .eq('helena_account_id', helenaAccountId)
+        .single();
+
+      if (accountError || !accountData) {
+        console.error('Erro ao buscar conta:', accountError);
+        document.getElementById('catalogTree').innerHTML = '<div class="card p-10 text-center"><h3 class="text-lg font-medium">Conta não encontrada</h3><p class="text-sm text-gray-500">Verifique o ID fornecido.</p></div>';
+        return;
+      }
+
+      currentAccount = accountData;
+      console.log('Conta encontrada:', currentAccount);
+
+      await loadData();
+    }
+
+    async function loadData() {
+      if (!currentAccount) return;
+
+      const { data: categoriesData, error: categoriesError } = await supabase
+        .from('categories')
+        .select('*')
+        .eq('account_id', currentAccount.id);
+
+      if (categoriesError) {
+        console.error('Erro ao carregar categorias:', categoriesError);
+        return;
+      }
+      categories = categoriesData || [];
+
+      const { data: productsData, error: productsError } = await supabase
+        .from('products')
+        .select('*, plans(*), addons(*)')
+        .eq('account_id', currentAccount.id);
+
+      if (productsError) {
+        console.error('Erro ao carregar produtos:', productsError);
+        return;
+      }
+      products = productsData || [];
+
+      renderCatalog();
+    }
+    
+    function renderCatalog(){
+        var container=document.getElementById('catalogTree');
+        if (!categories || categories.length === 0) {
+            container.innerHTML = '<div class="card p-10 text-center"><div class="w-12 h-12 mx-auto mb-3 rounded-lg flex items-center justify-center icon-box">' + icon('package', 'w-6 h-6') + '</div><h3 class="text-sm font-medium mb-1">Catálogo vazio</h3><p class="text-xs mb-3" style="color:var(--text-muted);">Comece criando uma categoria.</p><button onclick="openCategoryModal()" class="btn-primary px-4 py-2 rounded-lg text-sm">Criar Categoria</button></div>';
+            return;
+        }
+
+        var html=categories.map(function(cat){
+            var catProducts=products.filter(function(p){return p.category_id===cat.id;});
+            var isCollapsed=collapsedCategories[cat.id];
+            return '<div class="card overflow-hidden">'+
+                '<div class="category-header px-5 py-3 flex items-center justify-between border-b cursor-pointer" style="border-color:var(--border);" onclick="toggleCategory(\''+cat.id+'\')">'+
+                '<div class="flex items-center gap-3">'+
+                chevron(!isCollapsed)+
+                '<span class="w-8 h-8 rounded-lg flex items-center justify-center icon-box">'+icon(cat.icon||'package','w-4 h-4')+'</span>'+
+                '<div><h2 class="text-sm font-semibold">'+cat.name+'</h2><p class="text-xs" style="color:var(--text-muted);">'+(cat.description||'')+'</p></div>'+
+                '</div>'+
+                '<div class="flex items-center gap-2" onclick="event.stopPropagation();">'+
+                '<span class="badge badge-count">'+catProducts.length+' item(s)</span>'+
+                '<button onclick="deleteCategory(\''+cat.id+'\')" class="p-1.5 rounded hover:bg-red-50 opacity-50 hover:opacity-100" style="color:var(--danger);"><svg class="w-4 h-4" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>'+
+                '</div>'+
+                '</div>'+
+                '<div class="collapse-content '+(isCollapsed?'':'open')+'">'+
+                catProducts.map(function(p){return renderProduct(p);}).join('')+
+                (catProducts.length===0?'<div class="px-5 py-10 text-center" style="color:var(--text-muted);"><p class="text-sm">Nenhum item</p><button onclick="openProductModal(null,\''+cat.id+'\')" class="mt-2 text-sm hover:underline" style="color:var(--primary);">+ Adicionar</button></div>':'')+
+                '</div>'+
+                '</div>';
+        }).join('');
+        container.innerHTML=html;
+        populateCategorySelects();
+    }
+
+    window.toggleCategory = (catId) => { collapsedCategories[catId] = !collapsedCategories[catId]; renderCatalog(); }
+    window.toggleProduct = (prodId) => { collapsedProducts[prodId] = !collapsedProducts[prodId]; renderCatalog(); }
+
+    document.addEventListener('DOMContentLoaded', initializeApp);
+  </script>
+</body>
+</html>
