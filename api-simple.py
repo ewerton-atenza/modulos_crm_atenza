@@ -8,7 +8,7 @@ CORS(app)
 
 DB_CONFIG = {
     'host': 'supabase-db',
-    'port': 5432,
+    'port': 5435,
     'database': 'postgres',
     'user': 'postgres',
     'password': 'atenza515351'

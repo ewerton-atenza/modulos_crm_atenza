@@ -9,4 +9,4 @@ COPY api-simple.py .
 
 EXPOSE 3002
 
-CMD ["python", "api-simple.py"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:3002", "--access-logfile", "-", "--error-logfile", "-", "api-simple:app"]
