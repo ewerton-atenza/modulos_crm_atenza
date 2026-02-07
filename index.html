@@ -425,7 +425,7 @@
 
       console.log(`Buscando conta com helena_account_id: ${helenaAccountId}`);
       try {
-        const accounts = await fetchFromSupabase('accounts', `helena_account_id=eq.${helenaAccountId}&select=id,company_name`);
+        const accounts = await fetchFromSupabase('accounts', `helena_account_id=eq.${helenaAccountId}&select=id,name`);
         
         if (!accounts || accounts.length === 0) {
           console.error('Conta nao encontrada');
