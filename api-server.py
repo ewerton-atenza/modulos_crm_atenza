@@ -8,7 +8,7 @@ CORS(app)
 
 # Configuração do banco de dados
 DB_CONFIG = {
-    'host': 'localhost',
+    'host': 'supabase-db',
     'port': 5432,
     'database': 'postgres',
     'user': 'postgres',
