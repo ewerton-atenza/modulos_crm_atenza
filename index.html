@@ -336,14 +336,27 @@
     </div>
   </div>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
+  <script>
     const supabaseUrl = 'https://supabase.atenza.digital';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
-    const supabase = createClient(supabaseUrl, supabaseKey);
 
     let currentAccount = null;
+
+    async function fetchFromSupabase(table, query = '') {
+      const url = `${supabaseUrl}/rest/v1/${table}?${query}`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!response.ok) {
+        throw new Error(`Erro ${response.status}: ${response.statusText}`);
+      }
+      return await response.json();
+    }
     var ICONS = {
       package: '<svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>',
       monitor: '<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
@@ -412,24 +425,20 @@
 
       console.log(`Buscando conta com helena_account_id: ${helenaAccountId}`);
       try {
-        const { data: accountData, error: accountError } = await supabase
-          .from('accounts')
-          .select('id, company_name')
-          .eq('helena_account_id', helenaAccountId)
-          .single();
-
-        if (accountError || !accountData) {
-          console.error('Erro ao buscar conta:', accountError);
-          document.getElementById('catalogTree').innerHTML = '<div class="card p-10 text-center"><h3 class="text-lg font-medium">Conta não encontrada</h3><p class="text-sm text-gray-500">Verifique o ID fornecido.</p></div>';
+        const accounts = await fetchFromSupabase('accounts', `helena_account_id=eq.${helenaAccountId}&select=id,company_name`);
+        
+        if (!accounts || accounts.length === 0) {
+          console.error('Conta nao encontrada');
+          document.getElementById('catalogTree').innerHTML = '<div class="card p-10 text-center"><h3 class="text-lg font-medium">Conta nao encontrada</h3><p class="text-sm text-gray-500">Verifique o ID fornecido.</p></div>';
           return;
         }
 
-        currentAccount = accountData;
+        currentAccount = accounts[0];
         console.log('Conta encontrada:', currentAccount);
 
         await loadData();
       } catch (err) {
-        console.error('Erro na inicialização:', err);
+        console.error('Erro na inicializacao:', err);
         document.getElementById('catalogTree').innerHTML = '<div class="card p-10 text-center"><h3 class="text-lg font-medium">Erro ao conectar</h3><p class="text-sm text-gray-500">' + err.message + '</p></div>';
       }
     }
@@ -437,27 +446,21 @@
     async function loadData() {
       if (!currentAccount) return;
 
-      const { data: categoriesData, error: categoriesError } = await supabase
-        .from('categories')
-        .select('*')
-        .eq('account_id', currentAccount.id);
-
-      if (categoriesError) {
-        console.error('Erro ao carregar categorias:', categoriesError);
-        return;
+      try {
+        categories = await fetchFromSupabase('categories', 'account_id=eq.' + currentAccount.id + '&select=*');
+        console.log('Categorias carregadas:', categories.length, categories);
+      } catch (err) {
+        console.error('Erro ao carregar categorias:', err);
+        categories = [];
       }
-      categories = categoriesData || [];
 
-      const { data: productsData, error: productsError } = await supabase
-        .from('products')
-        .select('*, plans(*), addons(*)')
-        .eq('account_id', currentAccount.id);
-
-      if (productsError) {
-        console.error('Erro ao carregar produtos:', productsError);
-        return;
+      try {
+        products = await fetchFromSupabase('products', 'account_id=eq.' + currentAccount.id + '&select=*,plans(*),addons(*)');
+        console.log('Produtos carregados:', products.length, products);
+      } catch (err) {
+        console.error('Erro ao carregar produtos:', err);
+        products = [];
       }
-      products = productsData || [];
 
       renderCatalog();
     }
