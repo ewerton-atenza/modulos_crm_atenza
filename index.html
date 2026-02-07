@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Negocios - Catalogo</title>
+  <title>Negócios - Catálogo</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -62,8 +62,8 @@
           <svg class="w-5 h-5" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
         </div>
         <div>
-          <h1 class="text-lg font-semibold">Catalogo</h1>
-          <p class="text-xs" style="color: var(--text-muted);">Produtos, servicos e opcoes</p>
+          <h1 class="text-lg font-semibold">Catálogo</h1>
+          <p class="text-xs" style="color: var(--text-muted);">Produtos, serviços e opções</p>
         </div>
       </div>
       <div class="flex gap-2">
@@ -106,12 +106,12 @@
               <input type="text" id="productName" required class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="Ex: Sistema de Gestao...">
             </div>
             <div>
-              <label class="block text-sm font-medium mb-1.5">Descricao</label>
-              <textarea id="productDescription" rows="2" class="w-full px-3 py-2.5 rounded-lg text-sm resize-none" placeholder="Descricao..."></textarea>
+              <label class="block text-sm font-medium mb-1.5">Descrição</label>
+              <textarea id="productDescription" rows="2" class="w-full px-3 py-2.5 rounded-lg text-sm resize-none" placeholder="Descrição..."></textarea>
             </div>
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-sm font-medium mb-1.5">Codigo/SKU</label>
+                <label class="block text-sm font-medium mb-1.5">Código/SKU</label>
                 <input type="text" id="productSku" class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="PROD-001">
               </div>
               <div>
@@ -129,13 +129,13 @@
     </div>
   </div>
   
-  <!-- Modal: Opcao -->
+  <!-- Modal: Opção -->
   <div id="planModal" class="fixed inset-0 z-50 hidden">
     <div class="modal-backdrop absolute inset-0" onclick="closePlanModal()"></div>
     <div class="absolute inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-lg rounded-xl overflow-hidden flex flex-col max-h-[90vh] bg-white shadow-xl">
       <div class="px-5 py-4 border-b flex items-center justify-between" style="border-color: var(--border);">
         <div>
-          <h2 class="text-base font-semibold" id="planModalTitle">Nova Opcao</h2>
+          <h2 class="text-base font-semibold" id="planModalTitle">Nova Opção</h2>
           <p class="text-xs" id="planModalSubtitle" style="color: var(--text-muted);">Item: -</p>
         </div>
         <button onclick="closePlanModal()" class="p-1 rounded hover:bg-gray-100">
@@ -152,17 +152,17 @@
                 <input type="text" id="planName" required class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="Ex: Basico...">
               </div>
               <div>
-                <label class="block text-sm font-medium mb-1.5">Codigo/SKU</label>
+                <label class="block text-sm font-medium mb-1.5">Código/SKU</label>
                 <input type="text" id="planSku" class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="OPC-001">
               </div>
             </div>
             <div>
-              <label class="block text-sm font-medium mb-1.5">Descricao</label>
+              <label class="block text-sm font-medium mb-1.5">Descrição</label>
               <textarea id="planDescription" rows="2" class="w-full px-3 py-2.5 rounded-lg text-sm resize-none" placeholder="O que esta incluido..."></textarea>
             </div>
             <div class="grid grid-cols-3 gap-3">
               <div>
-                <label class="block text-sm font-medium mb-1.5">Preco *</label>
+                <label class="block text-sm font-medium mb-1.5">Preço *</label>
                 <div class="relative">
                   <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm" style="color: var(--text-muted);">R$</span>
                   <input type="text" id="planPrice" required class="w-full pl-10 pr-3 py-2.5 rounded-lg text-sm" placeholder="0,00" oninput="formatCurrencyInput(this)">
@@ -171,7 +171,7 @@
               <div>
                 <label class="block text-sm font-medium mb-1.5">Ciclo</label>
                 <select id="planBillingCycle" class="w-full px-3 py-2.5 rounded-lg text-sm">
-                  <option value="one_time">Unico</option><option value="monthly">Mensal</option><option value="quarterly">Trimestral</option><option value="semiannual">Semestral</option><option value="yearly">Anual</option>
+                  <option value="one_time">Único</option><option value="monthly">Mensal</option><option value="quarterly">Trimestral</option><option value="semiannual">Semestral</option><option value="yearly">Anual</option>
                 </select>
               </div>
               <div>
@@ -220,17 +220,17 @@
                 <input type="text" id="addonName" required class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="Ex: Taxa Urgencia...">
               </div>
               <div>
-                <label class="block text-sm font-medium mb-1.5">Codigo/SKU</label>
+                <label class="block text-sm font-medium mb-1.5">Código/SKU</label>
                 <input type="text" id="addonSku" class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="ADD-001">
               </div>
             </div>
             <div>
-              <label class="block text-sm font-medium mb-1.5">Descricao</label>
+              <label class="block text-sm font-medium mb-1.5">Descrição</label>
               <textarea id="addonDescription" rows="2" class="w-full px-3 py-2.5 rounded-lg text-sm resize-none" placeholder="O que oferece..."></textarea>
             </div>
             <div class="grid grid-cols-3 gap-3">
               <div>
-                <label class="block text-sm font-medium mb-1.5">Preco *</label>
+                <label class="block text-sm font-medium mb-1.5">Preço *</label>
                 <div class="relative">
                   <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm" style="color: var(--text-muted);">R$</span>
                   <input type="text" id="addonPrice" required class="w-full pl-10 pr-3 py-2.5 rounded-lg text-sm" placeholder="0,00" oninput="formatCurrencyInput(this)">
@@ -239,13 +239,13 @@
               <div>
                 <label class="block text-sm font-medium mb-1.5">Ciclo</label>
                 <select id="addonBillingCycle" class="w-full px-3 py-2.5 rounded-lg text-sm">
-                  <option value="one_time">Unico</option><option value="monthly">Mensal</option><option value="yearly">Anual</option>
+                  <option value="one_time">Único</option><option value="monthly">Mensal</option><option value="yearly">Anual</option>
                 </select>
               </div>
               <div>
                 <label class="block text-sm font-medium mb-1.5">Tipo</label>
                 <select id="addonType" class="w-full px-3 py-2.5 rounded-lg text-sm">
-                  <option value="addon">Adicional</option><option value="setup">Setup</option><option value="service">Servico</option><option value="tax">Taxa</option>
+                  <option value="addon">Adicional</option><option value="setup">Setup</option><option value="service">Serviço</option><option value="tax">Taxa</option>
                 </select>
               </div>
             </div>
@@ -256,7 +256,7 @@
             </div>
             <div class="flex items-center gap-3 p-3 rounded-lg" style="background: #FFFBEB;">
               <input type="checkbox" id="addonRequired" class="w-4 h-4 rounded" style="accent-color: var(--warning);">
-              <label for="addonRequired" class="text-sm" style="color: #B45309;">Obrigatorio na proposta</label>
+              <label for="addonRequired" class="text-sm" style="color: #B45309;">Obrigatório na proposta</label>
             </div>
           </div>
         </form>
@@ -281,11 +281,11 @@
       <div class="p-5 space-y-4">
         <div>
           <label class="block text-sm font-medium mb-1.5">Nome *</label>
-          <input type="text" id="categoryName" class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="Ex: Software, Servicos...">
+          <input type="text" id="categoryName" class="w-full px-3 py-2.5 rounded-lg text-sm" placeholder="Ex: Software, Serviços...">
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1.5">Descricao</label>
-          <textarea id="categoryDescription" rows="2" class="w-full px-3 py-2.5 rounded-lg text-sm resize-none" placeholder="Descricao..."></textarea>
+          <label class="block text-sm font-medium mb-1.5">Descrição</label>
+          <textarea id="categoryDescription" rows="2" class="w-full px-3 py-2.5 rounded-lg text-sm resize-none" placeholder="Descrição..."></textarea>
         </div>
         <div>
           <label class="block text-sm font-medium mb-1.5">Icone</label>
@@ -505,7 +505,7 @@
           '</div>'+
         '</div>';
       }).join('');
-      container.innerHTML=html||'<div class="card p-10 text-center"><div class="w-12 h-12 mx-auto mb-3 rounded-lg flex items-center justify-center icon-box">'+icon('package','w-6 h-6')+'</div><h3 class="text-sm font-medium mb-1">Catalogo vazio</h3><p class="text-xs mb-3" style="color:var(--text-muted);">Comece criando uma categoria.</p><button onclick="openCategoryModal()" class="btn-primary px-4 py-2 rounded-lg text-sm">Criar Categoria</button></div>';
+      container.innerHTML=html||'<div class="card p-10 text-center"><div class="w-12 h-12 mx-auto mb-3 rounded-lg flex items-center justify-center icon-box">'+icon('package','w-6 h-6')+'</div><h3 class="text-sm font-medium mb-1">Catálogo vazio</h3><p class="text-xs mb-3" style="color:var(--text-muted);">Comece criando uma categoria.</p><button onclick="openCategoryModal()" class="btn-primary px-4 py-2 rounded-lg text-sm">Criar Categoria</button></div>';
       populateCategorySelects();
     }
     
@@ -576,12 +576,12 @@
     function closeProductModal(){document.getElementById('productModal').classList.add('hidden');}
     function saveProduct(e){e.preventDefault();var id=document.getElementById('productId').value||'prod-'+Date.now();var isNew=!document.getElementById('productId').value;var d={id:id,category_id:document.getElementById('productCategory').value,name:document.getElementById('productName').value,description:document.getElementById('productDescription').value,sku:document.getElementById('productSku').value,status:document.getElementById('productStatus').value,plans:[],addons:[]};if(isNew)products.push(d);else{var i=products.findIndex(function(p){return p.id===id;});if(i>=0){d.plans=products[i].plans;d.addons=products[i].addons;products[i]=d;}}renderCatalog();closeProductModal();showToast(isNew?'Criado!':'Atualizado!');}
     function editProduct(id){openProductModal(id);}
-    function deleteProduct(id){if(!confirm('Excluir item e opcoes?'))return;products=products.filter(function(p){return p.id!==id;});renderCatalog();showToast('Excluido!');}
+    function deleteProduct(id){if(!confirm('Excluir item e opções?'))return;products=products.filter(function(p){return p.id!==id;});renderCatalog();showToast('Excluido!');}
     
-    function openPlanModal(prodId,planId){var prod=products.find(function(p){return p.id===prodId;});if(!prod)return;document.getElementById('planModal').classList.remove('hidden');document.getElementById('planForm').reset();document.getElementById('planId').value=planId||'';document.getElementById('planProductId').value=prodId;document.getElementById('planModalSubtitle').textContent='Item: '+prod.name;document.getElementById('planFeaturesList').innerHTML='';if(planId){var pl=prod.plans.find(function(x){return x.id===planId;});if(pl){document.getElementById('planModalTitle').textContent='Editar Opcao';document.getElementById('planName').value=pl.name;document.getElementById('planSku').value=pl.sku||'';document.getElementById('planDescription').value=pl.description||'';document.getElementById('planPrice').value=formatCurrencyValue(pl.price);document.getElementById('planBillingCycle').value=pl.billing_cycle;document.getElementById('planOrder').value=pl.order||'';(pl.features||[]).forEach(function(f){addPlanFeature(f);});}}else{document.getElementById('planModalTitle').textContent='Nova Opcao';document.getElementById('planOrder').value=(prod.plans||[]).length+1;}}
+    function openPlanModal(prodId,planId){var prod=products.find(function(p){return p.id===prodId;});if(!prod)return;document.getElementById('planModal').classList.remove('hidden');document.getElementById('planForm').reset();document.getElementById('planId').value=planId||'';document.getElementById('planProductId').value=prodId;document.getElementById('planModalSubtitle').textContent='Item: '+prod.name;document.getElementById('planFeaturesList').innerHTML='';if(planId){var pl=prod.plans.find(function(x){return x.id===planId;});if(pl){document.getElementById('planModalTitle').textContent='Editar Opção';document.getElementById('planName').value=pl.name;document.getElementById('planSku').value=pl.sku||'';document.getElementById('planDescription').value=pl.description||'';document.getElementById('planPrice').value=formatCurrencyValue(pl.price);document.getElementById('planBillingCycle').value=pl.billing_cycle;document.getElementById('planOrder').value=pl.order||'';(pl.features||[]).forEach(function(f){addPlanFeature(f);});}}else{document.getElementById('planModalTitle').textContent='Nova Opção';document.getElementById('planOrder').value=(prod.plans||[]).length+1;}}
     function closePlanModal(){document.getElementById('planModal').classList.add('hidden');}
     function addPlanFeature(v){var c=document.getElementById('planFeaturesList');var d=document.createElement('div');d.className='flex items-center gap-2';d.innerHTML='<input type="text" class="plan-feature-input flex-1 px-3 py-2 rounded-lg text-sm" placeholder="Ex: 10 usuarios..." value="'+(v||'')+'"><button type="button" onclick="this.parentElement.remove()" class="p-1.5 rounded hover:bg-red-50" style="color:var(--danger);"><svg class="w-4 h-4" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';c.appendChild(d);}
-    function savePlan(e){e.preventDefault();var prodId=document.getElementById('planProductId').value;var planId=document.getElementById('planId').value||'plan-'+Date.now();var isNew=!document.getElementById('planId').value;var features=[];document.querySelectorAll('.plan-feature-input').forEach(function(i){if(i.value.trim())features.push(i.value.trim());});var d={id:planId,name:document.getElementById('planName').value,sku:document.getElementById('planSku').value,description:document.getElementById('planDescription').value,price:parseCurrency(document.getElementById('planPrice').value),billing_cycle:document.getElementById('planBillingCycle').value,order:parseInt(document.getElementById('planOrder').value)||1,features:features};var prod=products.find(function(p){return p.id===prodId;});if(prod){if(isNew){prod.plans=prod.plans||[];prod.plans.push(d);}else{var i=prod.plans.findIndex(function(x){return x.id===planId;});if(i>=0)prod.plans[i]=d;}}renderCatalog();closePlanModal();showToast(isNew?'Opcao criada!':'Atualizada!');}
+    function savePlan(e){e.preventDefault();var prodId=document.getElementById('planProductId').value;var planId=document.getElementById('planId').value||'plan-'+Date.now();var isNew=!document.getElementById('planId').value;var features=[];document.querySelectorAll('.plan-feature-input').forEach(function(i){if(i.value.trim())features.push(i.value.trim());});var d={id:planId,name:document.getElementById('planName').value,sku:document.getElementById('planSku').value,description:document.getElementById('planDescription').value,price:parseCurrency(document.getElementById('planPrice').value),billing_cycle:document.getElementById('planBillingCycle').value,order:parseInt(document.getElementById('planOrder').value)||1,features:features};var prod=products.find(function(p){return p.id===prodId;});if(prod){if(isNew){prod.plans=prod.plans||[];prod.plans.push(d);}else{var i=prod.plans.findIndex(function(x){return x.id===planId;});if(i>=0)prod.plans[i]=d;}}renderCatalog();closePlanModal();showToast(isNew?'Opção criada!':'Atualizada!');}
     function editPlan(prodId,planId){openPlanModal(prodId,planId);}
     function deletePlan(prodId,planId){if(!confirm('Excluir?'))return;var p=products.find(function(x){return x.id===prodId;});if(p)p.plans=p.plans.filter(function(x){return x.id!==planId;});renderCatalog();showToast('Excluido!');}
     
