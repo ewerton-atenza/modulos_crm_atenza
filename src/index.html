@@ -113,29 +113,29 @@
         
         console.log('Buscando conta com ID:', accountId);
         
-        // Tentar buscar conta por helena_id (UUID do HelenaCRM)
+        // Tentar buscar conta por helena_account_id (prioridade 1)
         let { data: accounts, error } = await sb
           .from('accounts')
           .select('*')
-          .eq('helena_id', accountId)
+          .eq('helena_account_id', accountId)
           .limit(1);
         
-        // Se não encontrar, tentar por helena_account_id
+        // Se não encontrar, tentar por id (UUID da conta local)
         if (!accounts || accounts.length === 0) {
           const { data: accounts2 } = await sb
             .from('accounts')
             .select('*')
-            .eq('helena_account_id', accountId)
+            .eq('id', accountId)
             .limit(1);
           accounts = accounts2;
         }
         
-        // Se ainda não encontrar, tentar por id
+        // Se ainda não encontrar, tentar por helena_id
         if (!accounts || accounts.length === 0) {
           const { data: accounts3 } = await sb
             .from('accounts')
             .select('*')
-            .eq('id', accountId)
+            .eq('helena_id', accountId)
             .limit(1);
           accounts = accounts3;
         }
