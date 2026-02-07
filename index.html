@@ -342,7 +342,7 @@
     let currentAccount = null;
 
     async function fetchAccountData(helenaAccountId) {
-      const url = `${supabaseUrl}:3002/api/catalog?id=${helenaAccountId}`;
+      const url = `/api/catalog?id=${helenaAccountId}`;
       console.log('Fetching account data:', url);
       const response = await fetch(url);
       if (!response.ok) {
