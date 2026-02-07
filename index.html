@@ -337,23 +337,22 @@
   </div>
 
   <script>
-    const supabaseUrl = 'https://supabase.atenza.digital';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
+    const proxyUrl = window.location.protocol + '//' + window.location.hostname + ':3002';
 
     let currentAccount = null;
 
     async function fetchFromSupabase(table, query = '') {
-      const url = `${supabaseUrl}/rest/v1/${table}?${query}`;
+      const url = `${proxyUrl}/api/rest/v1/${table}?${query}`;
+      console.log('Fetching from proxy:', url);
       const response = await fetch(url, {
         method: 'GET',
         headers: {
-          'apikey': supabaseKey,
-          'Authorization': `Bearer ${supabaseKey}`,
           'Content-Type': 'application/json'
         }
       });
       if (!response.ok) {
-        throw new Error(`Erro ${response.status}: ${response.statusText}`);
+        const errorText = await response.text();
+        throw new Error(`Erro ${response.status}: ${errorText}`);
       }
       return await response.json();
     }
