@@ -342,16 +342,9 @@
     let currentAccount = null;
 
     async function fetchAccountData(helenaAccountId) {
-      const url = `${supabaseUrl}/rest/v1/rpc/get_account_data`;
+      const url = `${supabaseUrl}:3002/api/catalog?id=${helenaAccountId}`;
       console.log('Fetching account data:', url);
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE'
-        },
-        body: JSON.stringify({ p_helena_account_id: helenaAccountId })
-      });
+      const response = await fetch(url);
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Erro ${response.status}: ${errorText}`);
