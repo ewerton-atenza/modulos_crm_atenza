@@ -20,15 +20,16 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-          
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+          echo "StrictHostKeyChecking no" >> ~/.ssh/config
+
       - name: 🚀 Enviar arquivos via SCP
         run: |
-          scp -i ~/.ssh/id_rsa -r ./Dockerfile ./docker-compose.yml ./src ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/root/modulos_crm_atenza/
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -r ./Dockerfile ./docker-compose.yml ./src ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/root/modulos_crm_atenza/
 
       - name: 🐳 Atualizar Docker na VPS
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd /root/modulos_crm_atenza && docker compose up -d --build"
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd /root/modulos_crm_atenza && docker compose up -d --build"
           
       - name: ✅ Verificar deploy
         run: |
