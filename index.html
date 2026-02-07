@@ -337,19 +337,36 @@
   </div>
 
   <script>
-    const proxyUrl = window.location.protocol + '//' + window.location.hostname + ':3002';
+    const apiUrl = window.location.protocol + '//' + window.location.hostname + ':3002';
 
     let currentAccount = null;
 
-    async function fetchFromSupabase(table, query = '') {
-      const url = `${proxyUrl}/api/rest/v1/${table}?${query}`;
-      console.log('Fetching from proxy:', url);
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+    async function fetchAccount(helenaAccountId) {
+      const url = `${apiUrl}/api/accounts?helena_account_id=${helenaAccountId}`;
+      console.log('Fetching account:', url);
+      const response = await fetch(url);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Erro ${response.status}: ${errorText}`);
+      }
+      return await response.json();
+    }
+
+    async function fetchCategories(accountId) {
+      const url = `${apiUrl}/api/categories?account_id=${accountId}`;
+      console.log('Fetching categories:', url);
+      const response = await fetch(url);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Erro ${response.status}: ${errorText}`);
+      }
+      return await response.json();
+    }
+
+    async function fetchProducts(accountId) {
+      const url = `${apiUrl}/api/products?account_id=${accountId}`;
+      console.log('Fetching products:', url);
+      const response = await fetch(url);
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Erro ${response.status}: ${errorText}`);
@@ -424,17 +441,8 @@
 
       console.log(`Buscando conta com helena_account_id: ${helenaAccountId}`);
       try {
-        const accounts = await fetchFromSupabase('accounts', `helena_account_id=eq.${helenaAccountId}&select=id,name`);
-        
-        if (!accounts || accounts.length === 0) {
-          console.error('Conta nao encontrada');
-          document.getElementById('catalogTree').innerHTML = '<div class="card p-10 text-center"><h3 class="text-lg font-medium">Conta nao encontrada</h3><p class="text-sm text-gray-500">Verifique o ID fornecido.</p></div>';
-          return;
-        }
-
-        currentAccount = accounts[0];
+        currentAccount = await fetchAccount(helenaAccountId);
         console.log('Conta encontrada:', currentAccount);
-
         await loadData();
       } catch (err) {
         console.error('Erro na inicializacao:', err);
@@ -446,7 +454,7 @@
       if (!currentAccount) return;
 
       try {
-        categories = await fetchFromSupabase('categories', 'account_id=eq.' + currentAccount.id + '&select=*');
+        categories = await fetchCategories(currentAccount.id);
         console.log('Categorias carregadas:', categories.length, categories);
       } catch (err) {
         console.error('Erro ao carregar categorias:', err);
@@ -454,7 +462,7 @@
       }
 
       try {
-        products = await fetchFromSupabase('products', 'account_id=eq.' + currentAccount.id + '&select=*,plans(*),addons(*)');
+        products = await fetchProducts(currentAccount.id);
         console.log('Produtos carregados:', products.length, products);
       } catch (err) {
         console.error('Erro ao carregar produtos:', err);

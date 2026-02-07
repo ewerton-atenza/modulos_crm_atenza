@@ -3,7 +3,7 @@ const https = require('https');
 const url = require('url');
 
 const SUPABASE_URL = 'https://supabase.atenza.digital';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzcwNDQwNTE5LCJleHAiOjIwODU4MDA1MTl9.veBBi8SHSl7Ix9znnkIlFFjfTa2l0qmLJRz1WCIjV28';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q';
 
 const server = http.createServer((req, res) => {
   // CORS headers
