@@ -128,22 +128,23 @@ def delete_category(category_id):
 @app.route('/api/products', methods=['POST'])
 def create_product():
     data = request.json
+    account_id = data.get('account_id')
     category_id = data.get('category_id')
     name = data.get('name')
     description = data.get('description', '')
     sku = data.get('sku', '')
     is_active = data.get('is_active', True)
     
-    if not category_id or not name:
-        return jsonify({'error': 'category_id and name are required'}), 400
+    if not account_id or not category_id or not name:
+        return jsonify({'error': 'account_id, category_id and name are required'}), 400
     
     try:
         conn = psycopg2.connect(**DB_CONFIG)
         cur = conn.cursor()
         
         cur.execute(
-            "INSERT INTO products (category_id, name, description, sku, is_active) VALUES (%s, %s, %s, %s, %s) RETURNING id",
-            (category_id, name, description, sku, is_active)
+            "INSERT INTO products (account_id, category_id, name, description, sku, is_active) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",
+            (account_id, category_id, name, description, sku, is_active)
         )
         product_id = cur.fetchone()[0]
         
